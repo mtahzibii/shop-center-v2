@@ -10,7 +10,7 @@ node_modules/
 /coverage
 
 # production
-/build
+/buildgit
 
 # misc
 .DS_Store
