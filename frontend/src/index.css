@@ -1,0 +1,19 @@
+main {
+ min-height: 85vh;
+}
+
+.rating span {
+ margin-right: 0.2rem;
+}
+
+h3 {
+ padding: 0.5rem 0;
+}
+
+.card-body-link a:hover {
+ text-decoration: underline;
+}
+
+.no-descoration {
+ text-decoration: none;
+}
