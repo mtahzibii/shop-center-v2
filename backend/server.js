@@ -2,6 +2,7 @@ import express from 'express';
 import colors from 'colors';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 
 import connectDB from './config/db.js';
 import productRoutes from './routes/productRoutes.js';
@@ -29,6 +30,10 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use('/api/products', productRoutes);
 // app.use('/api/users', userRoutes);
+
+// Error handler middleware
+app.use(errorHandler);
+app.use(notFound);
 
 app.listen(PORT, () =>
  console.log(
