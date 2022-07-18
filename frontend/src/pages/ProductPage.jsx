@@ -1,8 +1,7 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { reset } from '../features/products/productSlice';
 import {
  Row,
  Col,
@@ -14,27 +13,35 @@ import {
  ListGroupItem,
 } from 'react-bootstrap';
 import Rating from '../components/Rating';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProduct } from '../features/products/productSlice';
+import { toast } from 'react-toastify';
+import Spinner from '../components/Spinner';
 
 const ProductPage = () => {
- const API_URI = 'http://localhost:5000/api/products';
- const [product, setProduct] = useState({});
  const [qty, setQty] = useState(0);
  const { productId } = useParams();
+ const dispatch = useDispatch();
+
+ const { product, isError, message, isLoading } = useSelector(
+  (state) => state.product
+ );
 
  useEffect(() => {
-  const fetchProduct = async (URI) => {
-   const { data } = await axios.get(`${URI}/${productId}`);
-
-   setProduct(data);
-  };
-
-  fetchProduct(API_URI);
- }, [productId]);
+  if (isError) {
+   toast.error(message);
+  }
+  dispatch(fetchProduct(productId));
+  dispatch(reset());
+ }, [productId, message, isError, dispatch]);
 
  const addToCartHandler = () => {
   console.log('add to cart');
  };
 
+ if (isLoading) {
+  return <Spinner />;
+ }
  return (
   <>
    <Link className='btn btn-dark mt-5' to='/'>

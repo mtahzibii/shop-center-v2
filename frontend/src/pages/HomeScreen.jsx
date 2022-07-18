@@ -1,26 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-// import products from '../products';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../features/products/productSlice';
 import Product from '../components/Product';
 import { Row, Col } from 'react-bootstrap';
+import Spinner from '../components/Spinner';
+import { toast } from 'react-toastify';
+import { reset } from '../features/products/productSlice';
 
 const HomeScreen = () => {
- const API_URI = 'http://localhost:5000/api/products';
- const [products, setProducts] = useState([]);
+ const dispatch = useDispatch();
 
+ // Get product's states from store
+ const { products, isLoading, isError, message, isSuccess } = useSelector(
+  (state) => state.product
+ );
+
+ //  Check error and success as page loads
  useEffect(() => {
-  // Fetch products
-  const fetchProducts = async (API_URI) => {
-   const { data } = await axios.get(API_URI);
-   setProducts(data);
-  };
+  if (isError) {
+   toast.error(message);
+  }
+ }, [isSuccess, isError, message, dispatch]);
 
-  fetchProducts(API_URI);
- }, []);
+ //  list products as page loads
+ useEffect(() => {
+  // Fetch products action
+  dispatch(fetchProducts());
+  dispatch(reset());
+ }, [dispatch]);
 
- //  const products = fetchProducts(API_URI);
- //  console.log(products);
+ if (isLoading) {
+  return <Spinner />;
+ }
 
  return (
   <>

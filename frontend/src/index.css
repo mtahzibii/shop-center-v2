@@ -17,3 +17,53 @@ h3 {
 .no-descoration {
  text-decoration: none;
 }
+
+.spinner {
+ position: fixed;
+ top: 40%;
+ left: 45%;
+ width: 250px;
+ height: 250px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ z-index: 5000;
+ font-size: 1.7rem;
+ font-weight: bold;
+ overflow: hidden;
+}
+.spinner-sector {
+ position: absolute;
+ width: 80%;
+ height: 80%;
+ border-radius: 50%;
+ border: 10px solid transparent;
+ mix-blend-mode: overlay;
+ animation: rotate var(--duration) var(--timing) infinite;
+}
+
+.spinner-sector-red {
+ border-top-color: rgb(191, 36, 36);
+ --duration: 1s;
+ --timing: ease-in-out;
+}
+.spinner-sector-blue {
+ border-left-color: rgb(52, 52, 207);
+ --duration: 1.6s;
+ --timing: ease-in;
+}
+.spinner-sector-green {
+ border-bottom-color: rgb(21, 150, 21);
+ --duration: 2.1s;
+ --timing: ease-out;
+}
+
+@keyframes rotate {
+ 0% {
+  transform: rotate(0deg);
+ }
+
+ 100% {
+  transform: rotate(360deg);
+ }
+}
