@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link, useParams } from 'react-router-dom';
 import { reset } from '../features/products/productSlice';
 import {
@@ -17,11 +18,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct } from '../features/products/productSlice';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
+import { addToCart } from '../features/carts/cartSlice';
 
 const ProductPage = () => {
- const [qty, setQty] = useState(0);
+ const [qty, setQty] = useState(1);
  const { productId } = useParams();
  const dispatch = useDispatch();
+ const navigate = useNavigate();
 
  const { product, isError, message, isLoading } = useSelector(
   (state) => state.product
@@ -32,11 +35,14 @@ const ProductPage = () => {
    toast.error(message);
   }
   dispatch(fetchProduct(productId));
-  dispatch(reset());
  }, [productId, message, isError, dispatch]);
 
- const addToCartHandler = () => {
-  console.log('add to cart');
+ const addToCartHandler = (e) => {
+  e.preventDefault();
+
+  const updatedProductInfo = { ...product, qty };
+  dispatch(addToCart(updatedProductInfo));
+  navigate(`/cart/${productId}?qty=${qty}`);
  };
 
  if (isLoading) {
@@ -90,7 +96,7 @@ const ProductPage = () => {
             <Form.Control
              as='select'
              value={qty}
-             onChange={(e) => setQty(e.target.value)}
+             onChange={(e) => setQty(+e.target.value)}
             >
              {[...Array(product.countInStock).keys()].map((item) => (
               <option key={item + 1} value={item + 1}>

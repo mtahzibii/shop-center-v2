@@ -67,3 +67,15 @@ h3 {
   transform: rotate(360deg);
  }
 }
+
+.cartItems {
+ display: flex;
+ align-items: center;
+ list-style-type: none;
+ font-weight: bold;
+ justify-content: space-between;
+}
+
+.cartItem {
+ text-decoration: none;
+}
