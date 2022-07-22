@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import Message from '../components/Message';
 import { Link } from 'react-router-dom';
-import { removeFromCart } from '../features/carts/cartSlice';
+import { addToCart, removeFromCart } from '../features/carts/cartSlice';
 
 const CartPage = () => {
  const { cartItems, isLoading } = useSelector((state) => state.cart);
@@ -35,6 +35,11 @@ const CartPage = () => {
 
  const checkoutHandler = () => {
   console.log('test');
+ };
+
+ const updateItemQty = (item, qty) => {
+  const product = { ...item, qty };
+  dispatch(addToCart(product));
  };
 
  if (isLoading) {
@@ -68,7 +73,7 @@ const CartPage = () => {
           <Form.Control
            as='select'
            value={item.qty}
-           onChange={(e) => setQty(+e.target.value)}
+           onChange={(e) => updateItemQty(item, e.target.value)}
           >
            {[...Array(item.countInStock).keys()].map((count) => (
             <option key={count + 1} value={count + 1}>
@@ -104,7 +109,7 @@ const CartPage = () => {
           fontWeight: 'bold',
          }}
         >
-         Subtotal: (3) Items
+         Subtotal: {cartItems.reduce((acc, curr) => acc + Number(curr.qty), 0)} Items
         </div>
        </Row>
       </ListGroupItem>
@@ -117,7 +122,8 @@ const CartPage = () => {
           fontWeight: 'bold',
          }}
         >
-         Total Price: $2003
+         Total Price: ${' '}
+         {cartItems.reduce((acc, curr) => acc + curr.price * curr.qty, 0).toFixed(2)}
         </div>
        </Row>
       </ListGroupItem>

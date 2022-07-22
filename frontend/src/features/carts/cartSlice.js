@@ -42,6 +42,14 @@ export const removeFromCart = createAsyncThunk(
  }
 );
 
+// Update quantity of product
+// export const updateProductQty = createAsyncThunk(
+//  'carts/updateQty',
+//  async (productId, thunkAPI) => {
+
+//  }
+// );
+
 export const cartSlice = createSlice({
  name: 'cart',
  initialState,

@@ -7,9 +7,25 @@ const addItemToCart = (product) => {
   cartItems = JSON.parse(localStorage.getItem('cartItems'));
  }
 
- cartItems.push(product);
- localStorage.setItem('cartItems', JSON.stringify(cartItems));
- return cartItems;
+ //  Check if item exists and take its index
+ let idx;
+ if (cartItems.length !== 0) {
+  cartItems.forEach((item, index) => {
+   if (item._id == product._id) {
+    idx = index;
+   }
+  });
+ }
+
+ if (idx !== undefined) {
+  cartItems.splice(idx, 1, product);
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  return cartItems;
+ } else {
+  cartItems.push(product);
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  return cartItems;
+ }
 };
 
 // Remove item from local storage and updated states
