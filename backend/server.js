@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use('/api/products', productRoutes);
-// app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes);
 
 // Error handler middleware
 app.use(errorHandler);

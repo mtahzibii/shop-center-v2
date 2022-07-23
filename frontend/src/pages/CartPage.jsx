@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
  Row,
  Col,
@@ -21,6 +22,8 @@ const CartPage = () => {
 
  const dispatch = useDispatch();
 
+ const navigate = useNavigate();
+
  const [qty, setQty] = useState(1);
 
  //  useEffect(() => {
@@ -31,10 +34,8 @@ const CartPage = () => {
   dispatch(removeFromCart(itemId));
  };
 
- //  const removeFromCartHandler = (id) => {};
-
  const checkoutHandler = () => {
-  console.log('test');
+  navigate('/login?redirect=shipping');
  };
 
  const updateItemQty = (item, qty) => {
@@ -129,7 +130,12 @@ const CartPage = () => {
       </ListGroupItem>
       <ListGroupItem>
        <Row>
-        <Button style={{ fontWeight: 'bold', fontSize: '18px' }}>
+        <Button
+         style={{ fontWeight: 'bold', fontSize: '18px' }}
+         type='btn-block'
+         disabled={cartItems.length === 0}
+         onClick={checkoutHandler}
+        >
          Proceed to Checkout
         </Button>
        </Row>
