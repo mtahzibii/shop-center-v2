@@ -79,3 +79,15 @@ h3 {
 .cartItem {
  text-decoration: none;
 }
+
+.form-email,
+.form-password,
+.form-name {
+ font-weight: bold;
+ font-size: 20px;
+ margin-bottom: 3px;
+}
+
+.form-input {
+ margin-bottom: 25px;
+}

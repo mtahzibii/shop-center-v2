@@ -7,7 +7,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Container } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
 import CartPage from './pages/CartPage';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProfilePage from './pages/ProfilePage';
 const App = () => {
  return (
   <>
@@ -20,6 +23,9 @@ const App = () => {
        <Route path='/product/:productId' element={<ProductPage />} />
        <Route path='/cart/:productId' element={<CartPage />} />
        <Route path='/cart' element={<CartPage />} />
+       <Route path='/login' element={<Login />} />
+       <Route path='/register' element={<Register />} />
+       <Route path='/profile' element={<ProfilePage />} />
       </Routes>
      </Container>
     </main>
