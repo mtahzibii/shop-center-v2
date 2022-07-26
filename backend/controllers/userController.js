@@ -35,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
    _id: user._id,
    password: hashedPassword,
    email,
+   isAdmin: user.isAdmin,
    token: generateToken(user._id),
   });
  } else {
@@ -71,10 +72,30 @@ const loginUser = asyncHandler(async (req, res) => {
  }
 });
 
+// @desc    Get current user profile
+// @route   GET /api/users/profile
+// @access  Private
+const getUserProfile = async (req, res) => {
+ const user = User.findById(req.user._id);
+
+ if (!user) {
+  res.status(404);
+  throw new Error('User not found');
+ }
+
+ res.status(200);
+ res.json({
+  id: req.user._id,
+  name: req.user.name,
+  email: req.user.email,
+  isAdmin: req.isAdmin,
+ });
+};
+
 const generateToken = (id) => {
  return jwt.sign({ id }, process.env.JWT_SECRET, {
   expiresIn: '30m',
  });
 };
 
-export { loginUser, registerUser };
+export { loginUser, registerUser, getUserProfile };
