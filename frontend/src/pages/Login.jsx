@@ -21,7 +21,7 @@ const Login = () => {
 
   // Redirect when logged in
   if (user) {
-   navigate('/profile');
+   navigate('/');
   }
  }, [user, isLoading, isError, message, navigate]);
 

@@ -75,22 +75,31 @@ const loginUser = asyncHandler(async (req, res) => {
 // @desc    Get current user profile
 // @route   GET /api/users/profile
 // @access  Private
-const getUserProfile = async (req, res) => {
- const user = User.findById(req.user._id);
+const getUserProfile = asyncHandler(async (req, res) => {
+ //  const user = await User.findById(req.user._id);
+ //  console.log(user);
 
- if (!user) {
-  res.status(404);
-  throw new Error('User not found');
- }
+ //  if (!user) {
+ //   res.status(404);
+ //   throw new Error('User not found');
+ //  }
+ //  const user = {
+ //   id: req.user._id,
+ //   name: req.user.name,
+ //   email: req.user.email,
+ //   isAdmin: req.user.isAdmin,
+ //   token: generateToken(req.user._id),
+ //  };
 
  res.status(200);
  res.json({
   id: req.user._id,
   name: req.user.name,
   email: req.user.email,
-  isAdmin: req.isAdmin,
+  isAdmin: req.user.isAdmin,
+  token: generateToken(req.user._id),
  });
-};
+});
 
 const generateToken = (id) => {
  return jwt.sign({ id }, process.env.JWT_SECRET, {
