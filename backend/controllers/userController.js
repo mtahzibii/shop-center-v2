@@ -77,7 +77,6 @@ const loginUser = asyncHandler(async (req, res) => {
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
  const user = await User.findById(req.user._id);
- console.log(user);
 
  if (!user) {
   res.status(404);
@@ -94,10 +93,44 @@ const getUserProfile = asyncHandler(async (req, res) => {
  });
 });
 
+// @desc    Update user profile
+// @route   POST /api/users/:userId
+// @access  Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+ const user = await User.findById(req.user._id);
+
+ if (user) {
+  user.name = req.body.name || req.user.name;
+  user.email = req.body.email || req.user.email;
+
+  if (req.body.password) {
+   //  Hash password
+   const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+   user.password = hashedPassword;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, user);
+
+  res.status(200);
+
+  res.json({
+   _id: updatedUser._id,
+   name: updatedUser.name,
+   email: updatedUser.email,
+   isAdmin: updatedUser.isAdmin,
+   token: generateToken(updatedUser._id),
+  });
+ } else {
+  res.status(404);
+  throw new Error('User not authorized');
+ }
+});
+
 const generateToken = (id) => {
  return jwt.sign({ id }, process.env.JWT_SECRET, {
   expiresIn: '30m',
  });
 };
 
-export { loginUser, registerUser, getUserProfile };
+export { loginUser, registerUser, getUserProfile, updateUserProfile };
