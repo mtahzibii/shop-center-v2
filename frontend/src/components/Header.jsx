@@ -16,6 +16,7 @@ const Header = () => {
  };
 
  const { user } = useSelector((state) => state.user);
+
  return (
   <header>
    <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>

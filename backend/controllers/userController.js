@@ -76,20 +76,13 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
- //  const user = await User.findById(req.user._id);
- //  console.log(user);
+ const user = await User.findById(req.user._id);
+ console.log(user);
 
- //  if (!user) {
- //   res.status(404);
- //   throw new Error('User not found');
- //  }
- //  const user = {
- //   id: req.user._id,
- //   name: req.user.name,
- //   email: req.user.email,
- //   isAdmin: req.user.isAdmin,
- //   token: generateToken(req.user._id),
- //  };
+ if (!user) {
+  res.status(404);
+  throw new Error('User not found');
+ }
 
  res.status(200);
  res.json({

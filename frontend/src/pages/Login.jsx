@@ -1,29 +1,36 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../features/users/userSlice.js';
 import Spinner from '../components/Spinner';
-import { toast } from 'react-toastify';
 import { reset } from '../features/users/userSlice.js';
+import { toast } from 'react-toastify';
 
 const Login = () => {
- const dispatch = useDispatch();
+ const location = useLocation();
  const navigate = useNavigate();
+ const dispatch = useDispatch();
  const [formData, setFormData] = useState({ email: '', password: '' });
 
- const { user, isLoading, isError, message } = useSelector((state) => state.user);
+ const { user, isLoading, message, isError } = useSelector((state) => state.user);
 
  useEffect(() => {
   if (isError) {
    toast.error(message);
   }
 
-  // Redirect when logged in
+  dispatch(reset());
+
+  // Redirect to previous page
   if (user) {
-   navigate('/');
+   if (location?.state?.from) {
+    navigate(location.state.from.pathname);
+   } else {
+    navigate('/');
+   }
   }
- }, [user, isLoading, isError, message, navigate]);
+ }, [user, isLoading, message, navigate]);
 
  const onChangeHandler = (e) => {
   setFormData((prevState) => ({ ...prevState, [e.target.id]: e.target.value }));
@@ -40,12 +47,14 @@ const Login = () => {
   };
 
   dispatch(loginUser(userData));
+
   dispatch(reset());
  };
 
  if (isLoading) {
   return <Spinner />;
  }
+
  return (
   <div>
    <h1 className='my-5'>Sign In</h1>

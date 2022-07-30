@@ -1,7 +1,10 @@
+// import { useLocation, useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 const API_URL = 'http://localhost:5000/api/users';
 
 // Register user via API
+
 const register = async (userData) => {
  const config = {
   Headers: {
@@ -16,6 +19,9 @@ const register = async (userData) => {
 
 // Login user via API
 const login = async (userData) => {
+ //  const location = useLocation();
+ //  const nvigate = useNavigate();
+
  // Set http header
  const config = {
   Headers: {
@@ -27,6 +33,7 @@ const login = async (userData) => {
  if (data) {
   localStorage.setItem('userInfo', JSON.stringify(data));
  }
+
  return data;
 };
 

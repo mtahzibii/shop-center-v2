@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -9,8 +10,12 @@ import { ToastContainer } from 'react-toastify';
 import CartPage from './pages/CartPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProfilePage from './pages/ProfilePage';
+import Shipping from './pages/Shipping';
+import Payment from './pages/Payment';
+import PlaceOrder from './pages/PlaceOrder';
+import PrivateRoute from './components/PrivateRoute';
+
 const App = () => {
  return (
   <>
@@ -25,7 +30,15 @@ const App = () => {
        <Route path='/cart' element={<CartPage />} />
        <Route path='/login' element={<Login />} />
        <Route path='/register' element={<Register />} />
-       <Route path='/profile' element={<ProfilePage />} />
+       <Route path='/shipping' element={<Shipping />} />
+       <Route path='/payment' element={<Payment />} />
+       <Route path='/placeOrder' element={<PlaceOrder />} />
+       <Route path='/profile' element={<PrivateRoute />}>
+        <Route path='/profile' element={<ProfilePage />} />
+       </Route>
+       <Route path='/shipping' element={<PrivateRoute />}>
+        <Route path='/shipping' element={<Shipping />} />
+       </Route>
       </Routes>
      </Container>
     </main>

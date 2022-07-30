@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
  Row,
@@ -16,6 +16,7 @@ import Spinner from '../components/Spinner';
 import Message from '../components/Message';
 import { Link } from 'react-router-dom';
 import { addToCart, removeFromCart } from '../features/carts/cartSlice';
+import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 
 const CartPage = () => {
  const { cartItems, isLoading } = useSelector((state) => state.cart);
@@ -26,16 +27,12 @@ const CartPage = () => {
 
  const [qty, setQty] = useState(1);
 
- //  useEffect(() => {
- //   console.log(cartItems);
- //  }, []);
-
  const removeFromCartHandler = (itemId) => {
   dispatch(removeFromCart(itemId));
  };
 
  const checkoutHandler = () => {
-  navigate('/login?redirect=shipping');
+  navigate('/shipping');
  };
 
  const updateItemQty = (item, qty) => {
@@ -48,9 +45,9 @@ const CartPage = () => {
  }
 
  return (
-  <Row className='mt-4'>
+  <Row className='mt-4 '>
    <Col lg={8}>
-    <h1>Shopping Cart</h1>
+    <h1 className='mb-4'>Shopping Cart</h1>
 
     {cartItems.length === 0 ? (
      <Message>
@@ -89,7 +86,11 @@ const CartPage = () => {
            variant='light'
            onClick={() => removeFromCartHandler(item._id)}
           >
-           <i className='fas fa-trash'></i>
+           <TrashIcon />
+           {/* <trash> */}
+           {/* <i class='icon-trash'></i> */}
+           {/* <span class='bi bi-trash'></span> */}
+           {/* <i className='fas fa-trash'></i> */}
           </Button>
          </Col>
         </Row>
@@ -98,7 +99,7 @@ const CartPage = () => {
      </ListGroup>
     )}
    </Col>
-   <Col lg={4} className='mt-2'>
+   <Col lg={4} className='mt-4'>
     <Card className='mt-5'>
      <ListGroup variant='flush'>
       <ListGroupItem>
@@ -106,7 +107,7 @@ const CartPage = () => {
         <div
          style={{
           textAlign: 'center',
-          fontSize: '22px',
+          fontSize: '18px',
           fontWeight: 'bold',
          }}
         >
@@ -119,7 +120,7 @@ const CartPage = () => {
         <div
          style={{
           textAlign: 'center',
-          fontSize: '22px',
+          fontSize: '18px',
           fontWeight: 'bold',
          }}
         >
@@ -131,7 +132,7 @@ const CartPage = () => {
       <ListGroupItem>
        <Row>
         <Button
-         style={{ fontWeight: 'bold', fontSize: '18px' }}
+         style={{ fontWeight: 'bold', fontSize: '16px' }}
          type='btn-block'
          disabled={cartItems.length === 0}
          onClick={checkoutHandler}
