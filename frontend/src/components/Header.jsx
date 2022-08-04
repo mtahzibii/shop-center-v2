@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser, reset } from '../features/users/userSlice';
 import { useNavigate } from 'react-router-dom';
+import Spinner from './Spinner';
 
 const Header = () => {
  const navigate = useNavigate();
@@ -15,7 +16,13 @@ const Header = () => {
   navigate('/login');
  };
 
- const { user } = useSelector((state) => state.user);
+ const { user, isLoading } = useSelector((state) => state.user);
+
+ useEffect(() => {
+  if (isLoading) {
+   return <Spinner />;
+  }
+ }, []);
 
  return (
   <header>

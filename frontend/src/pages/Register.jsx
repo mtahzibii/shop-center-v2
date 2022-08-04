@@ -45,7 +45,6 @@ const Register = () => {
    password,
   };
 
-  // Dispatch register action
   dispatch(registerUser(user));
   dispatch(reset());
  };

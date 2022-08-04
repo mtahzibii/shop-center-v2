@@ -14,7 +14,7 @@ const initialState = {
 
 // Action register an new user (async action)
 export const registerUser = createAsyncThunk(
- 'users/registerUser',
+ 'user/registerUser',
  async (userData, thunkAPI) => {
   try {
    return await userService.register(userData);
@@ -31,7 +31,7 @@ export const registerUser = createAsyncThunk(
 
 // Action login user (async action)
 export const loginUser = createAsyncThunk(
- 'users/getUser',
+ 'user/getUser',
  async (userData, thunkAPI) => {
   try {
    return await userService.login(userData);
@@ -47,17 +47,35 @@ export const loginUser = createAsyncThunk(
 );
 
 // Action logout user
-export const logoutUser = createAsyncThunk('users/logoutUser', async (thunkAPI) => {
+export const logoutUser = createAsyncThunk('user/logoutUser', async (thunkAPI) => {
  await userService.logout();
 });
 
 // Action get user profile
 export const getUserProfile = createAsyncThunk(
- 'users/getProfile',
+ 'user/getProfile',
  async (_, thunkAPI) => {
   try {
    const token = thunkAPI.getState().user.user.token;
    return await userService.getProfile(token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
+// Action update user profile
+export const updateUserProfile = createAsyncThunk(
+ 'user/updateProfile',
+ async (userProfileData, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await userService.updateProfile(userProfileData, token);
   } catch (error) {
    const message =
     (error.response && error.response.data && error.response.data.message) ||
@@ -122,6 +140,21 @@ const userSlice = createSlice({
     state.user = action.payload;
    })
    .addCase(getUserProfile.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = false;
+    state.isError = true;
+    state.message = action.payload;
+   })
+   .addCase(updateUserProfile.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(updateUserProfile.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.user = action.payload;
+   })
+   .addCase(updateUserProfile.rejected, (state, action) => {
     state.isLoading = false;
     state.isSuccess = false;
     state.isError = true;

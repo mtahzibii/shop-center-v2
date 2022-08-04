@@ -1,22 +1,58 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from '../features/users/userSlice.js';
 import Spinner from '../components/Spinner.jsx';
 import { toast } from 'react-toastify';
-import { reset, logoutUser } from '../features/users/userSlice.js';
+import {
+ reset,
+ logoutUser,
+ updateUserProfile,
+} from '../features/users/userSlice.js';
 import { Row, Col, Table, Button, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Message from '../components/Message.jsx';
 
 const ProfilePage = () => {
+ const dispatch = useDispatch();
+ const [MessageUpdate, setMessageUpdate] = useState('');
+
  const { user, isLoading, isError, message, isSuccess } = useSelector(
   (state) => state.user
  );
 
- //  const { cartItems, isLoading: cartLoading } = useSelector((state) => state.cart);
+ const [userProfileData, setUserProfileData] = useState({
+  name: user.name,
+  email: user.email,
+  password: '',
+  confirmPassword: '',
+ });
 
- const dispatch = useDispatch();
+ const { name, email, password, confirmPassword } = userProfileData;
 
+ const onChangeHdndler = (e) => {
+  setUserProfileData((prevState) => ({
+   ...prevState,
+   [e.target.id]: e.target.value,
+  }));
+ };
+
+ // Update user profile
+ const onSubmitHandler = (e) => {
+  e.preventDefault();
+
+  if (password !== confirmPassword) {
+   setMessageUpdate('Passwords do not match');
+  } else {
+   const userData = {
+    id: user._id,
+    name,
+    email,
+   };
+
+   dispatch(updateUserProfile(userData));
+   setMessageUpdate('Profile Updated');
+  }
+ };
  useEffect(() => {
   dispatch(getUserProfile());
  }, [dispatch]);
@@ -25,10 +61,6 @@ const ProfilePage = () => {
   if (isError) {
    toast.error('User not authorized. Please login again');
    dispatch(logoutUser());
-  }
-
-  if (isSuccess) {
-   dispatch(reset());
   }
  }, [dispatch, isSuccess, isError, message]);
 
@@ -46,23 +78,50 @@ const ProfilePage = () => {
     <>
      <Col md={3}>
       <h3 className='mt-3'>User Profile</h3>
-      <Form.Group className='mb-3'>
-       <Form.Label>Name</Form.Label>
-       <Form.Control placeholder={user.name} disabled />
-      </Form.Group>
-      <Form.Group className='mb-3'>
-       <Form.Label>Email</Form.Label>
-       <Form.Control placeholder={user.email} disabled />
-      </Form.Group>
-      <Form.Group className='mb-3'>
-       <Form.Label>Password</Form.Label>
-       <Form.Control placeholder='Password' disabled />
-      </Form.Group>
-      <Form.Group className='mb-3'>
-       <Form.Label>Confirm Password</Form.Label>
-       <Form.Control placeholder='Confirm Password' disabled />
-      </Form.Group>
-      <Button>Update</Button>
+      {isError && <Message variant='danger'>{message}</Message>}
+      {isSuccess && <Message variant='success'>Profile Updated</Message>}
+
+      <Form onSubmit={onSubmitHandler}>
+       <Form.Group className='mb-3'>
+        <Form.Label>Name</Form.Label>
+        <Form.Control
+         id='name'
+         type='text'
+         onChange={onChangeHdndler}
+         value={name}
+        />
+       </Form.Group>
+       <Form.Group className='mb-3'>
+        <Form.Label>Email</Form.Label>
+        <Form.Control
+         id='email'
+         type='email'
+         onChange={onChangeHdndler}
+         value={email}
+        />
+       </Form.Group>
+       <Form.Group className='mb-3'>
+        <Form.Label>Password</Form.Label>
+        <Form.Control
+         id='password'
+         type='password'
+         placeholder='Password'
+         onChange={onChangeHdndler}
+         value={password}
+        />
+       </Form.Group>
+       <Form.Group className='mb-3'>
+        <Form.Label>Confirm Password</Form.Label>
+        <Form.Control
+         id='confirmPassword'
+         type='password'
+         placeholder='Confirm Password'
+         onChange={onChangeHdndler}
+         value={confirmPassword}
+        />
+       </Form.Group>
+       <Button type='submit'>Update</Button>
+      </Form>
      </Col>
      <Col md={9}>
       <h3 className='mt-3'>My Orders</h3>

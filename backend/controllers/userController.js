@@ -33,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
  if (user) {
   res.status(201).json({
    _id: user._id,
-   password: hashedPassword,
+   name,
    email,
    isAdmin: user.isAdmin,
    token: generateToken(user._id),

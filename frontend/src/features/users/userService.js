@@ -4,7 +4,6 @@ import axios from 'axios';
 const API_URL = 'http://localhost:5000/api/users';
 
 // Register user via API
-
 const register = async (userData) => {
  const config = {
   Headers: {
@@ -19,9 +18,6 @@ const register = async (userData) => {
 
 // Login user via API
 const login = async (userData) => {
- //  const location = useLocation();
- //  const nvigate = useNavigate();
-
  // Set http header
  const config = {
   Headers: {
@@ -45,8 +41,20 @@ const getProfile = async (token) => {
   },
  };
 
- const response = await axios.get(`${API_URL}/profile`, config);
- return response.data;
+ const { data } = await axios.get(`${API_URL}/profile`, config);
+ return data;
+};
+
+// Update user profile
+const updateProfile = async (userProfileData, token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.put(`${API_URL}/profile`, userProfileData, config);
+
+ return data;
 };
 
 // Logout user
@@ -54,5 +62,5 @@ const logout = async () => {
  localStorage.removeItem('userInfo');
 };
 
-const userService = { login, register, logout, getProfile };
+const userService = { login, register, logout, getProfile, updateProfile };
 export default userService;
