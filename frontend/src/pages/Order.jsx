@@ -1,29 +1,33 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { Image, Button, ListGroup, ListGroupItem, Row, Col } from 'react-bootstrap';
 import Message from '../components/Message';
 import Spinner from '../components/Spinner';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fetchOrder } from '../features/orders/orderSlice';
 
 const Order = () => {
+ const dispatch = useDispatch();
  const navigate = useNavigate();
+ const { orderId } = useParams();
+
  const { user } = useSelector((state) => state.user);
  const { orderInfo, isLoading, isSuccess, isError, message } = useSelector(
   (state) => state.order
  );
 
  useEffect(() => {
+  if (!orderInfo || orderInfo._id === orderId) {
+   dispatch(fetchOrder(orderId));
+  }
+ }, [dispatch]);
+
+ useEffect(() => {
   if (!user) {
    navigate('/login');
   }
- });
-
- useEffect(() => {
-  if (isLoading) {
-   return <Spinner />;
-  }
- }, [isLoading]);
+ }, [user]);
 
  //   Add decimal to prices
  const addDecimals = (num) => {
@@ -32,6 +36,10 @@ const Order = () => {
  const itemsPrice = addDecimals(
   +orderInfo.orderItems.reduce((acc, curr) => acc + curr.price * curr.qty, 0)
  );
+
+ if (isLoading) {
+  return <Spinner />;
+ }
 
  return (
   <div>

@@ -17,5 +17,18 @@ const setOrdertoDB = async (orderDetails, token) => {
  return data;
 };
 
+// Find order from API
+const getOrder = async (orderId, token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.get(`${API_URL}/${orderId}`, config);
+
+ console.log(data);
+ return data;
+};
+
 const orderService = { setOrdertoDB };
 export default orderService;
