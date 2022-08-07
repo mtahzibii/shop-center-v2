@@ -2,12 +2,23 @@ import React from 'react';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { updatePaymentMethod } from '../features/carts/cartSlice';
 
 const Payment = () => {
+ const dispatch = useDispatch();
+
+ const paymentMethodfromLS = JSON.parse(localStorage.getItem('paymentMethod'));
+
+ const [paymentMethod, setPaymentMethod] = useState(paymentMethodfromLS ?? 'PayPal');
  const navigate = useNavigate();
 
  const onSubmitHandler = (e) => {
   e.preventDefault();
+
+  localStorage.setItem('paymentMethod', JSON.stringify(paymentMethod));
+  dispatch(updatePaymentMethod(paymentMethod));
   navigate('/placeOrder');
  };
 
@@ -22,17 +33,22 @@ const Payment = () => {
    <Form onSubmit={onSubmitHandler}>
     <Form.Check
      type='radio'
-     label='PayPal'
+     label='PayPal or Credit Card'
+     value='PayPal'
      id='paypal'
      name='paymentMethod'
      style={{ accentColor: 'green' }}
+     checked={paymentMethod == 'PayPal'}
+     onChange={(e) => setPaymentMethod(e.target.value)}
     />
     <Form.Check
      type='radio'
-     label='Credit Card'
+     label='Stripe'
      id='creditCard'
-     disabled
+     value='Stripe'
+     checked={paymentMethod == 'Stripe'}
      name='paymentMethod'
+     onChange={(e) => setPaymentMethod(e.target.value)}
     />
 
     <Button type='submit' className='mt-4'>

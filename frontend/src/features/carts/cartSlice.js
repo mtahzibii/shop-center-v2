@@ -2,10 +2,16 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import cartServices from './cartServices';
 
 const cartItemsFromStorage = JSON.parse(localStorage.getItem('cartItems'));
+const shippingAddress = JSON.parse(localStorage.getItem('shippingAddress'));
+const paymentMethod = JSON.parse(localStorage.getItem('paymentMethod'));
 
 const initialState = {
  cartItems: cartItemsFromStorage ? cartItemsFromStorage : [],
- shippingAddress: {},
+ shippingAddress: shippingAddress ? shippingAddress : {},
+ paymentMethod: paymentMethod ? paymentMethod : '',
+ shippingPrice: '',
+ taxPrice: '',
+ totalPrice: '',
  message: '',
  isLoading: false,
 };
@@ -29,7 +35,6 @@ export const removeFromCart = createAsyncThunk(
  'carts/removeItems',
  (productId, thunkAPI) => {
   try {
-   //  const cartItems = thunkAPI.getState().cart.cartItems;
    return cartServices.removeItemFromCart(productId);
   } catch (error) {
    const message =
@@ -42,19 +47,22 @@ export const removeFromCart = createAsyncThunk(
  }
 );
 
-// Update quantity of product
-// export const updateProductQty = createAsyncThunk(
-//  'carts/updateQty',
-//  async (productId, thunkAPI) => {
-
-//  }
-// );
-
 export const cartSlice = createSlice({
  name: 'cart',
  initialState,
  reducers: {
   reset: (state) => initialState,
+  orderPricingDetails: (state, action) => {
+   state.shippingPrice = action.payload.shippingPrice;
+   state.taxPrice = action.payload.taxPrice;
+   state.totalPrice = action.payload.totalPrice;
+  },
+  updatePaymentMethod: (state, action) => {
+   state.paymentMethod = action.payload;
+  },
+  setShippingAddress: (state, action) => {
+   state.shippingAddress = action.payload;
+  },
  },
  extraReducers: (builder) =>
   builder
@@ -82,5 +90,10 @@ export const cartSlice = createSlice({
    }),
 });
 
-export const { reset } = cartSlice.actions;
+export const {
+ reset,
+ orderPricingDetails,
+ updatePaymentMethod,
+ setShippingAddress,
+} = cartSlice.actions;
 export default cartSlice.reducer;

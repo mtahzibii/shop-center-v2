@@ -15,6 +15,7 @@ import Shipping from './pages/Shipping';
 import Payment from './pages/Payment';
 import PlaceOrder from './pages/PlaceOrder';
 import PrivateRoute from './components/PrivateRoute';
+import Order from './pages/Order';
 
 const App = () => {
  return (
@@ -33,6 +34,7 @@ const App = () => {
        <Route path='/shipping' element={<Shipping />} />
        <Route path='/payment' element={<Payment />} />
        <Route path='/placeOrder' element={<PlaceOrder />} />
+       <Route path='/order/:orderId' element={<Order />} />
        <Route path='/profile' element={<PrivateRoute />}>
         <Route path='/profile' element={<ProfilePage />} />
        </Route>

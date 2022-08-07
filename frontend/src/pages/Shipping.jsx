@@ -1,29 +1,26 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setShippingAddress } from '../features/carts/cartSlice';
 
 const Shipping = () => {
+ const dispatch = useDispatch();
  const navigate = useNavigate();
  const { user } = useSelector((state) => state.user);
 
- useEffect(() => {
-  const shippingDataFromStorage = JSON.parse(localStorage.getItem('shippingInfo'));
-  if (shippingDataFromStorage !== null) {
-   setShippingData(JSON.parse(localStorage.getItem('shippingInfo')));
-  }
- }, []);
+ const shippingDataFromLS = JSON.parse(localStorage.getItem('shippingAddress'));
 
  const [shippingData, setShippingData] = useState({
-  address: '',
-  phoneNumber: '',
-  city: '',
-  postalCode: '',
-  country: '',
+  address: shippingDataFromLS?.address ?? '',
+  phone: shippingDataFromLS?.phone ?? '',
+  city: shippingDataFromLS?.city ?? '',
+  postalCode: shippingDataFromLS?.postalCode ?? '',
+  country: shippingDataFromLS?.country ?? '',
  });
 
- const { address, phoneNumber, city, postalCode, country } = shippingData;
+ const { address, phone, city, postalCode, country } = shippingData;
 
  const onChangeHandler = (e) => {
   setShippingData((prevState) => ({ ...prevState, [e.target.id]: e.target.value }));
@@ -32,15 +29,16 @@ const Shipping = () => {
  const onSubmitHandler = (e) => {
   e.preventDefault();
 
-  const shippingInfo = {
+  const shippingData = {
    address,
-   phoneNumber,
+   phone,
    city,
    postalCode,
    country,
   };
 
-  localStorage.setItem('shippingInfo', JSON.stringify(shippingInfo));
+  localStorage.setItem('shippingAddress', JSON.stringify(shippingData));
+  dispatch(setShippingAddress(shippingData));
   navigate('/payment');
  };
 
@@ -59,6 +57,7 @@ const Shipping = () => {
       placeholder='Enter youe address'
       value={address}
       onChange={onChangeHandler}
+      required
      />
      <Form.Text className='text-muted'>
       We'll never share your address with anyone else.
@@ -69,10 +68,11 @@ const Shipping = () => {
      <Form.Label>Phone Number</Form.Label>
      <Form.Control
       type='Number'
+      id='phone'
       placeholder='Enter valid mobile number'
-      id='phoneNumber'
-      value={phoneNumber}
+      value={phone}
       onChange={onChangeHandler}
+      required
      />
      <Form.Text className='text-muted'>
       We'll never share your phone number with anyone else.
@@ -83,10 +83,11 @@ const Shipping = () => {
      <Form.Label>City</Form.Label>
      <Form.Control
       type='text'
-      placeholder='Enter your city'
       id='city'
+      placeholder='Enter your city'
       value={city}
       onChange={onChangeHandler}
+      required
      />
     </Form.Group>
 
@@ -94,10 +95,11 @@ const Shipping = () => {
      <Form.Label>Postal Code</Form.Label>
      <Form.Control
       type='Number'
-      placeholder='Enter postal code'
       id='postalCode'
+      placeholder='Enter postal code'
       value={postalCode}
       onChange={onChangeHandler}
+      required
      />
     </Form.Group>
 
@@ -105,10 +107,11 @@ const Shipping = () => {
      <Form.Label>Country</Form.Label>
      <Form.Control
       type='text'
-      placeholder='Enter your country'
       id='country'
+      placeholder='Enter your country'
       value={country}
       onChange={onChangeHandler}
+      required
      />
     </Form.Group>
 

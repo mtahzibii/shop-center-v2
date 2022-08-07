@@ -41,6 +41,7 @@ const ProductPage = () => {
   e.preventDefault();
 
   const updatedProductInfo = { ...product, qty };
+
   dispatch(addToCart(updatedProductInfo));
   navigate(`/cart/${productId}?qty=${qty}`);
  };

@@ -22,7 +22,9 @@ const addItemToCart = (product) => {
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
   return cartItems;
  } else {
-  cartItems.push(product);
+  // Add product id to product object (Because of database model)
+  const updatedProduct = { ...product, product: product._id };
+  cartItems.push(updatedProduct);
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
   return cartItems;
  }
