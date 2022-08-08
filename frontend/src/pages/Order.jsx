@@ -53,7 +53,8 @@ const Order = () => {
         <span className='fw-bold'>Name: </span> {user.name}{' '}
        </p>
        <p>
-        <span className='fw-bold'>Email: </span> {user.email}
+        <span className='fw-bold'>Email: </span>{' '}
+        <a href={`mailto:${user.email}`}>{user.email}</a>
        </p>
        <p>
         <span className='fw-bold'>Phone: </span> {orderInfo.shippingAddress.phone}
@@ -63,14 +64,22 @@ const Order = () => {
         {orderInfo.shippingAddress.address}, {orderInfo.shippingAddress.city},
         {orderInfo.shippingAddress.country}
        </p>
-       <Message variant='danger'>Not Delivered</Message>
+       {!orderInfo.isDelivered ? (
+        <Message variant='danger'>Not Delivered</Message>
+       ) : (
+        <Message variant='success'>Delivered</Message>
+       )}
       </ListGroupItem>
       <ListGroupItem className='mt-4'>
        <h2 className='text-body mb-3'>Payment Method</h2>
        <p className='fs-5'>
         <span className='fw-bold'>Method: </span> {orderInfo.paymentMethod}
        </p>
-       <Message variant='danger'>Not Paid</Message>
+       {!orderInfo.isPaid ? (
+        <Message variant='danger'>Not Paid</Message>
+       ) : (
+        <Message variant='success'>Paid at {orderInfo.paidAt}</Message>
+       )}
       </ListGroupItem>
       <ListGroupItem className='mt-4'>
        <h2 className='text-body mb-3'>Order Items</h2>
