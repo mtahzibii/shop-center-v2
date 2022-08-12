@@ -2,7 +2,6 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link, useParams } from 'react-router-dom';
-import { reset } from '../features/products/productSlice';
 import {
  Row,
  Col,

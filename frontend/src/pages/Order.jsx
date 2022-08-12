@@ -1,49 +1,54 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { PayPalButton } from 'react-paypal-button-v2';
-import { Image, Button, ListGroup, ListGroupItem, Row, Col } from 'react-bootstrap';
+import { Image, ListGroup, ListGroupItem, Row, Col } from 'react-bootstrap';
 import Message from '../components/Message';
 import Spinner from '../components/Spinner';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchOrder } from '../features/orders/orderSlice';
+import { getOrder } from '../features/orders/orderSlice';
 
 const Order = () => {
  const dispatch = useDispatch();
  const navigate = useNavigate();
  const { orderId } = useParams();
 
- const { user } = useSelector((state) => state.user);
- const { orderInfo, isLoading, isSuccess, isError, message } = useSelector(
-  (state) => state.order
- );
-
- useEffect(() => {
-  if (!orderInfo || orderInfo._id === orderId) {
-   dispatch(fetchOrder(orderId));
-  }
- }, [dispatch]);
+ const { user, isLoading: userLoading } = useSelector((state) => state.user);
+ const orderDetails = useSelector((state) => state.order);
 
  useEffect(() => {
   if (!user) {
    navigate('/login');
   }
- }, [user]);
+
+  if (orderId) {
+   dispatch(getOrder(orderId));
+  }
+ }, [dispatch, orderId, navigate, user]);
+
+ if (!orderDetails) {
+  return <Spinner />;
+ }
+
+ const { order, isLoading, isError, message } = orderDetails;
 
  //   Add decimal to prices
  const addDecimals = (num) => {
   return (Math.round(num * 100) / 100).toFixed(2);
  };
  const itemsPrice = addDecimals(
-  +orderInfo.orderItems.reduce((acc, curr) => acc + curr.price * curr.qty, 0)
+  +order?.orderItems?.reduce((acc, curr) => acc + curr.price * curr.qty, 0)
  );
 
- if (isLoading) {
+ if (isLoading || userLoading) {
   return <Spinner />;
+ }
+
+ if (isError) {
+  return <Message>{message}</Message>;
  }
 
  return (
   <div>
-   <h2 className='mt-3 mb-5'>{`ORDER ${orderInfo._id}`}</h2>
+   <h2 className='mt-3 mb-5'>{`ORDER ${order._id}`}</h2>
    <Row className='mb-5'>
     <Col lg={8}>
      <ListGroup variant='flush'>
@@ -57,14 +62,13 @@ const Order = () => {
         <a href={`mailto:${user.email}`}>{user.email}</a>
        </p>
        <p>
-        <span className='fw-bold'>Phone: </span> {orderInfo.shippingAddress.phone}
+        <span className='fw-bold'>Phone: </span> {order?.shippingAddress?.phone}
        </p>
        <p>
-        <span className='fw-bold'>Address: </span>{' '}
-        {orderInfo.shippingAddress.address}, {orderInfo.shippingAddress.city},
-        {orderInfo.shippingAddress.country}
+        <span className='fw-bold'>Address: </span> {order?.shippingAddress?.address},{' '}
+        {order?.shippingAddress?.city},{order?.shippingAddress?.country}
        </p>
-       {!orderInfo.isDelivered ? (
+       {!order?.isDelivered ? (
         <Message variant='danger'>Not Delivered</Message>
        ) : (
         <Message variant='success'>Delivered</Message>
@@ -73,19 +77,19 @@ const Order = () => {
       <ListGroupItem className='mt-4'>
        <h2 className='text-body mb-3'>Payment Method</h2>
        <p className='fs-5'>
-        <span className='fw-bold'>Method: </span> {orderInfo.paymentMethod}
+        <span className='fw-bold'>Method: </span> {order.paymentMethod}
        </p>
-       {!orderInfo.isPaid ? (
+       {!order.isPaid ? (
         <Message variant='danger'>Not Paid</Message>
        ) : (
-        <Message variant='success'>Paid at {orderInfo.paidAt}</Message>
+        <Message variant='success'>Paid at {order.paidAt}</Message>
        )}
       </ListGroupItem>
       <ListGroupItem className='mt-4'>
        <h2 className='text-body mb-3'>Order Items</h2>
 
        <ListGroup variant='flush'>
-        {orderInfo.orderItems.map((item) => (
+        {order?.orderItems?.map((item) => (
          <ListGroupItem key={item._id}>
           <Row>
            <Col lg={2}>
@@ -118,23 +122,20 @@ const Order = () => {
       <ListGroupItem>
        <Row>
         <Col>Shipping</Col>
-        <Col>${orderInfo.shippingPrice}</Col>
+        <Col>${order.shippingPrice}</Col>
        </Row>
       </ListGroupItem>
       <ListGroupItem>
        <Row>
         <Col>Tax</Col>
-        <Col>${orderInfo.taxPrice}</Col>
+        <Col>${order.taxPrice}</Col>
        </Row>
       </ListGroupItem>
       <ListGroupItem>
        <Row>
         <Col>Total</Col>
-        <Col>${orderInfo.totalPrice}</Col>
+        <Col>${order.totalPrice}</Col>
        </Row>
-      </ListGroupItem>
-      <ListGroupItem className='d-grid'>
-       <Button>Paypal</Button>
       </ListGroupItem>
      </ListGroup>
     </Col>

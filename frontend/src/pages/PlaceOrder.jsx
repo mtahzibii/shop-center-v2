@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
  Row,
  Col,
@@ -24,22 +22,23 @@ const PlaceOrder = () => {
   (state) => state.cart
  );
 
- const { orderInfo, isLoading, isSuccess } = useSelector((state) => state.order);
+ const { order, isLoading, isSuccess } = useSelector((state) => state.order);
 
  const dispatch = useDispatch();
  const navigate = useNavigate();
 
  useEffect(() => {
   if (isSuccess) {
-   navigate(`/order/${orderInfo._id}`);
+   navigate(`/order/${order._id}`);
   }
- }, [isSuccess]);
+  // eslint-disable-next-line
+ }, [isSuccess, navigate]);
 
  useEffect(() => {
   if (!user) {
    navigate('/login');
   }
- }, [user]);
+ }, [user, navigate]);
 
  //  Add decimal to float numbers
  const toDecimal = (number) => {
@@ -61,6 +60,7 @@ const PlaceOrder = () => {
    totalPrice,
   };
   dispatch(orderPricingDetails(pricingDetails));
+  // eslint-disable-next-line
  }, []);
 
  const placeOrderHandler = (e) => {
@@ -77,13 +77,12 @@ const PlaceOrder = () => {
 
   // Dispatch reducer
   dispatch(setOrder(orderDetails));
+  // navigate(`/order/${order._id}`);
  };
 
- //  useEffect(() => {
- //   if (isSuccess) {
- //    navigate(`/order/${orderInfo._id}`);
- //   }
- //  }, [isSuccess]);
+ if (isLoading) {
+  return <Spinner />;
+ }
 
  return (
   <>
@@ -165,18 +164,20 @@ const PlaceOrder = () => {
          <Col>$ {totalPrice}</Col>
         </Row>
        </ListGroupItem>
-       <ListGroupItem>
-        <Row>
-         <Button
-          type='button'
-          onClick={placeOrderHandler}
-          disabled={cartItems.length === 0}
-          className='btn-block'
-         >
-          Place Order
-         </Button>
-        </Row>
-       </ListGroupItem>
+       {cartItems && (
+        <ListGroupItem>
+         <Row>
+          <Button
+           type='button'
+           onClick={placeOrderHandler}
+           disabled={cartItems.length === 0}
+           className='btn-block'
+          >
+           Place Order
+          </Button>
+         </Row>
+        </ListGroupItem>
+       )}
       </ListGroup>
      </Card>
     </Col>

@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setShippingAddress } from '../features/carts/cartSlice';
 
 const Shipping = () => {
  const dispatch = useDispatch();
  const navigate = useNavigate();
- const { user } = useSelector((state) => state.user);
 
  const shippingDataFromLS = JSON.parse(localStorage.getItem('shippingAddress'));
 

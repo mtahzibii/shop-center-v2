@@ -2,7 +2,7 @@ import React from 'react';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updatePaymentMethod } from '../features/carts/cartSlice';
 

@@ -16,7 +16,7 @@ const createOrder = asyncHandler(async (req, res) => {
  } = req.body;
 
  //  Check if user logged in
- const user = await User.findById(req.user.id);
+ const user = await User.findById(req.user._id);
 
  if (!user) {
   res.status(401);
@@ -59,13 +59,46 @@ const getOrder = asyncHandler(async (req, res) => {
  }
 });
 
-// @desc   Get all orders
+// @desc   Get logged in user  orders
 // @route  GET /api/orders
 // @Access Private
 const getAllOrders = asyncHandler(async (req, res) => {
- const orders = await Order.find({});
-
- res.status(200).json(orders);
+ console.log('orders');
+ const orders = await Order.find({ user: req.user._id });
+ if (orders) {
+  res.status(200).json(orders);
+ } else {
+  res.status(400);
+  throw new Error('User not authorized!');
+ }
 });
 
-export { createOrder, getOrder, getAllOrders };
+// @desc   Update order to paid
+// @route  PUT /api/orders/:orderId/pay
+// @access Private
+const updateOrderToPaid = asyncHandler(async (req, res) => {
+ const orderId = req.params.orderId;
+
+ const order = await Order.findById(orderId);
+
+ //  Add payment result info into order document in DB
+ if (order) {
+  order.isPaid = true;
+  order.paidAt = Date.now();
+  order.paymentResult = {
+   id: req.body.id,
+   status: req.body.status,
+   update_time: req.body.update_time,
+   email_address: req.body.payer.email_address,
+  };
+
+  // Update order in DB
+  const updatedOrder = await Order.findByIdAndUpdate(orderId, order);
+  res.status(200).json(updatedOrder);
+ } else {
+  res.status(404);
+  throw new Error('Order not found');
+ }
+});
+
+export { createOrder, getOrder, getAllOrders, updateOrderToPaid };

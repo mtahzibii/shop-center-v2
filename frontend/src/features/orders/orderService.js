@@ -14,11 +14,16 @@ const setOrdertoDB = async (orderDetails, token) => {
  // Save order info in local storage
  localStorage.setItem('orderInfo', JSON.stringify(data));
 
+ //  Remove items from cart in local storage
+ localStorage.removeItem('cartItems');
+ localStorage.removeItem('paymentMethod');
+ localStorage.removeItem('shippingAddress');
+
  return data;
 };
 
-// Find order from API
-const getOrder = async (orderId, token) => {
+// Get order from database using order API
+const getOrderFromDB = async (orderId, token) => {
  const config = {
   headers: {
    Authorization: `Bearer ${token}`,
@@ -26,9 +31,38 @@ const getOrder = async (orderId, token) => {
  };
  const { data } = await axios.get(`${API_URL}/${orderId}`, config);
 
- console.log(data);
  return data;
 };
 
-const orderService = { setOrdertoDB };
+// Get user logged in orders from database using order API
+const getMyOrdersFromDB = async (token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.get('http://localhost:5000/api/orders', config);
+
+ localStorage.setItem('orderInfo', JSON.stringify(data));
+ return data;
+};
+
+// Update order info by payment
+const orderPay = async (paymentResult, orderId, token) => {
+ const config = {
+  headers: {
+   'Content-Type': 'application/json',
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.put(
+  `${API_URL}/${orderId}/pay`,
+  paymentResult,
+  config
+ );
+
+ return data;
+};
+
+const orderService = { setOrdertoDB, getOrderFromDB, getMyOrdersFromDB, orderPay };
 export default orderService;
