@@ -84,30 +84,21 @@ const getAllUsers = async (token) => {
  return data;
 };
 
-// Get user profile by Admin
-// const getUserProfileByAdmin = async (token) => {
-//  const config = {
-//   headers: {
-//    Authorization: `Bearer ${token}`,
-//   },
-//  };
-
-//  const { data } = await axios.get(`${API_URL}/profile`, config);
-//  console.log(data);
-//  return data;
-// };
-
 // Update user profile by Admin
-// const updateUserProfileByAdmin = async (userProfileData, token) => {
-//  const config = {
-//   headers: {
-//    Authorization: `Bearer ${token}`,
-//   },
-//  };
-//  const { data } = await axios.put(`${API_URL}/profile`, userProfileData, config);
+const updateUserProfileByAdmin = async (userProfileData, token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.put(
+  `${API_URL}/admin/users/${userProfileData._id}`,
+  userProfileData,
+  config
+ );
 
-//  return data;
-// };
+ return data;
+};
 
 // Logout user
 const logout = async () => {
@@ -122,5 +113,6 @@ const userService = {
  updateProfile,
  getAllUsers,
  getUserProfileByAdmin,
+ updateUserProfileByAdmin,
 };
 export default userService;

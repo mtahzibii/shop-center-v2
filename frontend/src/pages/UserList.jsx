@@ -24,7 +24,7 @@ const UserList = () => {
   } else if (!user) {
    navigate('/login');
   }
- }, [dispatch]);
+ }, [dispatch, navigate]);
 
  if (!user.isAdmin) {
   return (

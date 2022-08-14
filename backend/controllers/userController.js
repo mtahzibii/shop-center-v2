@@ -144,7 +144,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 // @desc    Get user profile by admin
 // @route   GET /api/users/admin/users/:userId
-// @access  Private
+// @access  Private/Admin
 const getUserByAdmin = asyncHandler(async (req, res) => {
  const user = await User.findById(req.params.userId);
 
@@ -161,6 +161,24 @@ const getUserByAdmin = asyncHandler(async (req, res) => {
  }
 });
 
+// @desc    Update user profile by admin
+// @route   PUT /api/users/admin/users/:userId
+// @access  Private/Admin
+const updateUserProfileByAdmin = asyncHandler(async (req, res) => {
+ //  const user = await User.findById(req.params.userId);
+
+ //  const { name, email, isAdmin } = req.body;
+
+ //  const userToBeUpdated = { ...user, name, email, isAdmin };
+
+ const updatedProfile = await User.findByIdAndUpdate(
+  req.params.userId,
+  req.body
+ ).select('-password');
+
+ res.status(201).json(updatedProfile);
+});
+
 const generateToken = (id) => {
  return jwt.sign({ id }, process.env.JWT_SECRET, {
   expiresIn: '5h',
@@ -174,4 +192,5 @@ export {
  updateUserProfile,
  getAllUsers,
  getUserByAdmin,
+ updateUserProfileByAdmin,
 };

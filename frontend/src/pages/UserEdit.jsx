@@ -34,7 +34,7 @@ const UserEdit = () => {
  }, [dispatch, isSuccess]);
 
  useEffect(() => {
-  if (isSuccess && userEdit._id === userId) {
+  if (isSuccess && userEdit?._id === userId) {
    setUserData({
     name: userEdit?.name,
     email: userEdit?.email,
@@ -49,8 +49,24 @@ const UserEdit = () => {
   });
  };
 
- const editUserHandler = () => {
-  console.log('edit user');
+ const onChangeCheckbox = (e) => {
+  setUserData((prevState) => ({ ...prevState, [e.target.id]: e.target.checked }));
+ };
+
+ const editUserHandler = (e) => {
+  e.preventDefault();
+
+  console.log(userData.isAdmin);
+
+  const updatedUserData = {
+   _id: userId,
+   name: userData.name,
+   email: userData.email,
+   isAdmin: userData.isAdmin,
+  };
+
+  dispatch(updateUserByAdmin(updatedUserData));
+  window.location.reload();
  };
 
  if (isLoading) {
@@ -84,13 +100,15 @@ const UserEdit = () => {
       ></FormControl>
      </FormGroup>
 
-     <FormGroup>
-      <FormCheck
+     <FormGroup controlId='isadmin'>
+      <Form.Check
+       type='switch'
        id='isAdmin'
        label='Is Admin'
        className='mt-4 mb-5 fw-bold'
        value={userData.isAdmin}
-       onChange={onChangeHandler}
+       checked={userData.isAdmin ? 1 : 0}
+       onChange={onChangeCheckbox}
       />
      </FormGroup>
 
