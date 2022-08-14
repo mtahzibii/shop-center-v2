@@ -10,7 +10,6 @@ import {
  Card,
  ListGroupItem,
 } from 'react-bootstrap';
-// import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import Message from '../components/Message';
@@ -87,10 +86,6 @@ const CartPage = () => {
            onClick={() => removeFromCartHandler(item._id)}
           >
            <TrashIcon />
-           {/* <trash> */}
-           {/* <i class='icon-trash'></i> */}
-           {/* <span class='bi bi-trash'></span> */}
-           {/* <i className='fas fa-trash'></i> */}
           </Button>
          </Col>
         </Row>

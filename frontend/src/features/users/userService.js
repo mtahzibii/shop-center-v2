@@ -42,6 +42,21 @@ const getProfile = async (token) => {
  };
 
  const { data } = await axios.get(`${API_URL}/profile`, config);
+
+ return data;
+};
+
+// Get user profile by admin
+const getUserProfileByAdmin = async (token, userId) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.get(`${API_URL}/admin/users/${userId}`, config);
+
+ localStorage.setItem('userEditInfo', JSON.stringify(data));
+
  return data;
 };
 
@@ -57,10 +72,55 @@ const updateProfile = async (userProfileData, token) => {
  return data;
 };
 
+// Get all users data
+const getAllUsers = async (token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.get(API_URL, config);
+
+ return data;
+};
+
+// Get user profile by Admin
+// const getUserProfileByAdmin = async (token) => {
+//  const config = {
+//   headers: {
+//    Authorization: `Bearer ${token}`,
+//   },
+//  };
+
+//  const { data } = await axios.get(`${API_URL}/profile`, config);
+//  console.log(data);
+//  return data;
+// };
+
+// Update user profile by Admin
+// const updateUserProfileByAdmin = async (userProfileData, token) => {
+//  const config = {
+//   headers: {
+//    Authorization: `Bearer ${token}`,
+//   },
+//  };
+//  const { data } = await axios.put(`${API_URL}/profile`, userProfileData, config);
+
+//  return data;
+// };
+
 // Logout user
 const logout = async () => {
  localStorage.removeItem('userInfo');
 };
 
-const userService = { login, register, logout, getProfile, updateProfile };
+const userService = {
+ login,
+ register,
+ logout,
+ getProfile,
+ updateProfile,
+ getAllUsers,
+ getUserProfileByAdmin,
+};
 export default userService;

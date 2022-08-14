@@ -18,11 +18,9 @@ const Header = () => {
 
  const { user, isLoading } = useSelector((state) => state.user);
 
- useEffect(() => {
-  if (isLoading) {
-   return <Spinner />;
-  }
- }, []);
+ if (isLoading) {
+  return <Spinner />;
+ }
 
  return (
   <header>
@@ -37,14 +35,33 @@ const Header = () => {
         <i className='fas fa-shopping-cart'></i> Cart
        </Nav.Link>
       </LinkContainer>
-      {user ? (
+      {user && user.isAdmin === true && (
+       <>
+        <NavDropdown title='Admin' id='admin'>
+         <NavDropdown.Item href='/profile'>Prfile</NavDropdown.Item>
+         <NavDropdown.Item href='/login' onClick={onLogout}>
+          Sign out
+         </NavDropdown.Item>
+        </NavDropdown>
+
+        <NavDropdown title='Management' id='management'>
+         <NavDropdown.Item href='/admin/users'>Users</NavDropdown.Item>
+         <NavDropdown.Item href='/admin/products'>Products</NavDropdown.Item>
+         <NavDropdown.Item href='/admin/orders'>Orders</NavDropdown.Item>
+        </NavDropdown>
+       </>
+      )}
+
+      {user && user.isAdmin === false && (
        <NavDropdown title={user.name} id='username'>
         <NavDropdown.Item href='/profile'>Prfile</NavDropdown.Item>
         <NavDropdown.Item href='/login' onClick={onLogout}>
          Sign out
         </NavDropdown.Item>
        </NavDropdown>
-      ) : (
+      )}
+
+      {!user && (
        <LinkContainer to='/login'>
         <Nav.Link>
          <i className='fas fa-user'></i> Sign In

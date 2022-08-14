@@ -16,6 +16,8 @@ import Payment from './pages/Payment';
 import PlaceOrder from './pages/PlaceOrder';
 import PrivateRoute from './components/PrivateRoute';
 import Order from './pages/Order';
+import UserList from './pages/UserList';
+import UserEdit from './pages/UserEdit';
 
 const App = () => {
  return (
@@ -41,6 +43,8 @@ const App = () => {
        <Route path='/shipping' element={<PrivateRoute />}>
         <Route path='/shipping' element={<Shipping />} />
        </Route>
+       <Route path='/admin/users' element={<UserList />} />
+       <Route path='/admin/users/:userId' element={<UserEdit />} />
       </Routes>
      </Container>
     </main>

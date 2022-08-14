@@ -16,9 +16,7 @@ export const setOrder = createAsyncThunk(
  async (orderDetails, thunkAPI) => {
   try {
    const token = thunkAPI.getState().user.user.token;
-   const temp = await orderService.setOrdertoDB(orderDetails, token);
-   console.log(temp);
-   return temp;
+   return await orderService.setOrdertoDB(orderDetails, token);
   } catch (error) {
    const message =
     (error.response && error.response.data && error.response.data.message) ||

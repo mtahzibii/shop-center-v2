@@ -5,7 +5,9 @@ import userService from './userService';
 const localUser = JSON.parse(localStorage.getItem('userInfo'));
 
 const initialState = {
+ users: [],
  user: localUser ? localUser : null,
+ userEdit: null,
  isLoading: false,
  isSuccess: false,
  isError: false,
@@ -51,13 +53,31 @@ export const logoutUser = createAsyncThunk('user/logoutUser', async (thunkAPI) =
  await userService.logout();
 });
 
-// Action get user profile
+// Get user profile
 export const getUserProfile = createAsyncThunk(
  'user/getProfile',
  async (_, thunkAPI) => {
   try {
    const token = thunkAPI.getState().user.user.token;
    return await userService.getProfile(token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
+// Action get all users
+export const getUsers = createAsyncThunk(
+ 'users/getAllUsers',
+ async (_, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await userService.getAllUsers(token);
   } catch (error) {
    const message =
     (error.response && error.response.data && error.response.data.message) ||
@@ -76,6 +96,42 @@ export const updateUserProfile = createAsyncThunk(
   try {
    const token = thunkAPI.getState().user.user.token;
    return await userService.updateProfile(userProfileData, token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
+// Update user profile by Admin
+export const updateUserByAdmin = createAsyncThunk(
+ 'user/updateProfileByAdmin',
+ async (userProfileData, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await userService.updateProfile(userProfileData, token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
+// Get user profile by Admin
+export const getUserByAdmin = createAsyncThunk(
+ 'user/getUserProfileByAdmin',
+ async (userId, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await userService.getUserProfileByAdmin(token, userId);
   } catch (error) {
    const message =
     (error.response && error.response.data && error.response.data.message) ||
@@ -155,6 +211,51 @@ const userSlice = createSlice({
     state.user = action.payload;
    })
    .addCase(updateUserProfile.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = false;
+    state.isError = true;
+    state.message = action.payload;
+   })
+   .addCase(getUsers.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(getUsers.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.users = action.payload;
+   })
+   .addCase(getUsers.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = false;
+    state.isError = true;
+    state.message = action.payload;
+   })
+   .addCase(getUserByAdmin.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(getUserByAdmin.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.userEdit = action.payload;
+   })
+   .addCase(getUserByAdmin.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = false;
+    state.isError = true;
+    state.message = action.payload;
+   })
+   .addCase(updateUserByAdmin.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(updateUserByAdmin.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.userEdit = action.payload;
+   })
+   .addCase(updateUserByAdmin.rejected, (state, action) => {
     state.isLoading = false;
     state.isSuccess = false;
     state.isError = true;
