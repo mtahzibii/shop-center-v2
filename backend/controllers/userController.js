@@ -44,6 +44,20 @@ const registerUser = asyncHandler(async (req, res) => {
  }
 });
 
+// @desc    Get all userService
+// @route   GET /api/users
+// @access  Private
+const getAllUsers = asyncHandler(async (req, res) => {
+ const users = await User.find({});
+
+ if (users) {
+  res.status(200).json(users);
+ } else {
+  res.status(400);
+  throw new Error('Users not found');
+ }
+});
+
 // @desc    Login a user
 // @route   POST /api/users/login
 // @access  Public
@@ -64,6 +78,7 @@ const loginUser = asyncHandler(async (req, res) => {
    _id: user._id,
    name: user.name,
    email: user.email,
+   isAdmin: user.isAdmin,
    token: generateToken(user._id),
   });
  } else {
@@ -127,10 +142,36 @@ const updateUserProfile = asyncHandler(async (req, res) => {
  }
 });
 
+// @desc    Get user profile by admin
+// @route   GET /api/users/admin/users/:userId
+// @access  Private
+const getUserByAdmin = asyncHandler(async (req, res) => {
+ const user = await User.findById(req.params.userId);
+
+ if (user) {
+  res.status(200).json({
+   _id: user._id,
+   name: user.name,
+   email: user.email,
+   isAdmin: user.isAdmin,
+  });
+ } else {
+  res.status(404);
+  throw new Error('User not found');
+ }
+});
+
 const generateToken = (id) => {
  return jwt.sign({ id }, process.env.JWT_SECRET, {
   expiresIn: '5h',
  });
 };
 
-export { loginUser, registerUser, getUserProfile, updateUserProfile };
+export {
+ loginUser,
+ registerUser,
+ getUserProfile,
+ updateUserProfile,
+ getAllUsers,
+ getUserByAdmin,
+};

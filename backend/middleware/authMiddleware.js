@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
+//  Check if user is logegd in
 const protect = asyncHandler(async (req, res, next) => {
  let token;
 
@@ -30,4 +31,14 @@ const protect = asyncHandler(async (req, res, next) => {
  }
 });
 
-export default protect;
+// Check if admin is logged in
+const isAdmin = (req, res, next) => {
+ if (req.user && req.user.isAdmin) {
+  next();
+ } else {
+  res.status(401);
+  throw new Error('Not authorized as an admin');
+ }
+};
+
+export { protect, isAdmin };

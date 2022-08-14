@@ -63,7 +63,6 @@ const getOrder = asyncHandler(async (req, res) => {
 // @route  GET /api/orders
 // @Access Private
 const getAllOrders = asyncHandler(async (req, res) => {
- console.log('orders');
  const orders = await Order.find({ user: req.user._id });
  if (orders) {
   res.status(200).json(orders);
