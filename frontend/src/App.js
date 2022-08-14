@@ -18,6 +18,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Order from './pages/Order';
 import UserList from './pages/UserList';
 import UserEdit from './pages/UserEdit';
+import ProductList from './pages/ProductList';
 
 const App = () => {
  return (
@@ -45,6 +46,7 @@ const App = () => {
        </Route>
        <Route path='/admin/users' element={<UserList />} />
        <Route path='/admin/users/:userId' element={<UserEdit />} />
+       <Route path='/admin/products' element={<ProductList />} />
       </Routes>
      </Container>
     </main>

@@ -102,7 +102,7 @@ const UserEdit = () => {
 
      <FormGroup controlId='isadmin'>
       <Form.Check
-       type='switch'
+       type='checkbox'
        id='isAdmin'
        label='Is Admin'
        className='mt-4 mb-5 fw-bold'

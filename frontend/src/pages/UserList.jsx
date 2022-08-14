@@ -79,7 +79,6 @@ const UserList = () => {
          className='ml-5'
          style={{
           height: '40px',
-          // padding: '20px',
           marginLeft: '20px',
           borderRadius: '5px',
           background: 'none',
