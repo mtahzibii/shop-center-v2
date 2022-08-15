@@ -1,11 +1,4 @@
-import {
- Form,
- FormCheck,
- FormControl,
- FormGroup,
- FormLabel,
- Button,
-} from 'react-bootstrap';
+import { Form, FormControl, FormGroup, FormLabel, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
 import { useState, useEffect } from 'react';

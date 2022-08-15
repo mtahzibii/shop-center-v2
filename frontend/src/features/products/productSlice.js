@@ -1,5 +1,5 @@
 import productService from './productService';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAsyncThunkAction } from '@reduxjs/toolkit';
 
 const initialState = {
  products: [],
@@ -33,6 +33,42 @@ export const fetchProduct = createAsyncThunk(
  async (productId, thunkAPI) => {
   try {
    return await productService.getProduct(productId);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
+// Update product
+export const updateProduct = createAsyncThunk(
+ 'product/updateProduct',
+ async (productData, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await productService.updateProductSpec(productData, token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
+// Create a new product
+export const createProduct = createAsyncThunk(
+ 'product/createProduct',
+ async (productData, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await productService.createNewProduct(productData, token);
   } catch (error) {
    const message =
     (error.response && error.response.data && error.response.data.message) ||
@@ -85,6 +121,21 @@ const productSlice = createSlice({
     state.product = action.payload;
    })
    .addCase(fetchProduct.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isError = true;
+    state.isSuccess = false;
+    state.message = action.payload;
+   })
+   .addCase(updateProduct.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(updateProduct.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isError = false;
+    state.isSuccess = true;
+    state.product = action.payload;
+   })
+   .addCase(updateProduct.rejected, (state, action) => {
     state.isLoading = false;
     state.isError = true;
     state.isSuccess = false;

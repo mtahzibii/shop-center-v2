@@ -19,6 +19,8 @@ import Order from './pages/Order';
 import UserList from './pages/UserList';
 import UserEdit from './pages/UserEdit';
 import ProductList from './pages/ProductList';
+import ProductEdit from './pages/ProductEdit';
+import NewProduct from './pages/NewProduct';
 
 const App = () => {
  return (
@@ -47,6 +49,8 @@ const App = () => {
        <Route path='/admin/users' element={<UserList />} />
        <Route path='/admin/users/:userId' element={<UserEdit />} />
        <Route path='/admin/products' element={<ProductList />} />
+       <Route path='/admin/products/:productId' element={<ProductEdit />} />
+       <Route path='/admin/products/new-product' element={<NewProduct />} />
       </Routes>
      </Container>
     </main>

@@ -4,8 +4,10 @@ import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../features/products/productSlice';
+import { useNavigate } from 'react-router-dom';
 
 const ProductList = () => {
+ const navigate = useNavigate();
  const dispatch = useDispatch();
  const { products, isLoading } = useSelector((state) => state.product);
 
@@ -22,7 +24,10 @@ const ProductList = () => {
      <h1>Products</h1>
     </Col>
     <Col lg={2} style={{ margin: '10px 0', padding: '5px 0' }}>
-     <Button style={{ background: '#449056', borderRadius: '5px' }}>
+     <Button
+      style={{ background: '#449056', borderRadius: '5px' }}
+      onClick={() => navigate('/admin/products/new-product')}
+     >
       <i className='fas fa-plus '></i> Create Product
      </Button>
     </Col>

@@ -13,5 +13,44 @@ const getProduct = async (productId) => {
  return data;
 };
 
-const productService = { getProducts, getProduct };
+// Update product
+const updateProductSpec = async (productData, token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+
+ const { data } = await axios.put(
+  `${API_URL}/admin/products/${productData._id}`,
+  productData,
+  config
+ );
+
+ console.log(data);
+
+ return data;
+};
+
+// Create new product
+const createNewProduct = async (productData, token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+
+ const { data } = await axios.post(`${API_URL}/admin/products`, productData, config);
+
+ console.log(data);
+
+ return data;
+};
+
+const productService = {
+ getProducts,
+ getProduct,
+ updateProductSpec,
+ createNewProduct,
+};
 export default productService;
