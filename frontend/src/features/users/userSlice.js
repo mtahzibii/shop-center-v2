@@ -143,6 +143,24 @@ export const getUserByAdmin = createAsyncThunk(
  }
 );
 
+// Delete a user by admin
+export const deleteUser = createAsyncThunk(
+ 'products/deleteProduct',
+ async (userId, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await userService.deleteUserByAdmin(userId, token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
 const userSlice = createSlice({
  name: 'user',
  initialState,
@@ -259,6 +277,21 @@ const userSlice = createSlice({
     state.isLoading = false;
     state.isSuccess = false;
     state.isError = true;
+    state.message = action.payload;
+   })
+   .addCase(deleteUser.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(deleteUser.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.userEdit = action.payload;
+   })
+   .addCase(deleteUser.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isError = true;
+    state.isSuccess = false;
     state.message = action.payload;
    }),
 });

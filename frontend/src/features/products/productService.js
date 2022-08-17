@@ -27,8 +27,6 @@ const updateProductSpec = async (productData, token) => {
   config
  );
 
- console.log(data);
-
  return data;
 };
 
@@ -41,8 +39,21 @@ const createNewProduct = async (productData, token) => {
  };
 
  const { data } = await axios.post(`${API_URL}/admin/products`, productData, config);
+ return data;
+};
 
- console.log(data);
+// Delete a product
+const deleteSingleProduct = async (productId, token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+
+ const { data } = await axios.delete(
+  `${API_URL}/admin/products/${productId}`,
+  config
+ );
 
  return data;
 };
@@ -52,5 +63,6 @@ const productService = {
  getProduct,
  updateProductSpec,
  createNewProduct,
+ deleteSingleProduct,
 };
 export default productService;

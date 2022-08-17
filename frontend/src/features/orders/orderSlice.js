@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import thunk from 'redux-thunk';
 import orderService from './orderService';
 
 const initialState = {
@@ -68,12 +69,48 @@ export const getOrders = createAsyncThunk(
 );
 
 // Update order by payment
-const updateOrderByPayment = createAsyncThunk(
+export const updateOrderByPayment = createAsyncThunk(
  'orders/payment',
  async (paymentResult, orderId, thunkAPI) => {
   try {
    const token = thunkAPI.getState().user.user.token;
    return await orderService.orderPay(paymentResult, orderId, token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
+// Get all users's orders
+export const getAllOrders = createAsyncThunk(
+ 'orders/getAllOrders',
+ async (_, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await orderService.getAllOrdersByAdmin(token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
+// Update order info by admin
+export const updateOrder = createAsyncThunk(
+ 'orders/updateOrder',
+ async (updatedOrder, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await orderService.updateOrderByAdmin(updatedOrder, token);
   } catch (error) {
    const message =
     (error.response && error.response.data && error.response.data.message) ||
@@ -152,6 +189,36 @@ export const orderSlice = createSlice({
     state.orders = action.payload;
    })
    .addCase(updateOrderByPayment.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = false;
+    state.isError = true;
+    state.message = action.payload;
+   })
+   .addCase(getAllOrders.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(getAllOrders.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.orders = action.payload;
+   })
+   .addCase(getAllOrders.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = false;
+    state.isError = true;
+    state.message = action.payload;
+   })
+   .addCase(updateOrder.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(updateOrder.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.order = action.payload;
+   })
+   .addCase(updateOrder.rejected, (state, action) => {
     state.isLoading = false;
     state.isSuccess = false;
     state.isError = true;

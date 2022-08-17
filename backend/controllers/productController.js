@@ -24,54 +24,10 @@ const getProduct = asyncHandler(async (req, res) => {
  }
 });
 
-// @desc    Create a new product
-// @route   POST /api/products/
-// @access  Private
-// const createProduct = asyncHandler(async (req, res) => {
-//  const {
-//   name,
-//   image,
-//   brand,
-//   price,
-//   category,
-//   description,
-//   reviews,
-//   numReviews,
-//   countInStock,
-//  } = req.body;
-
-//  // Find user in databse (req.user is get from protect in auth middleware)
-//  const user = await User.findById(req.user.id);
-
-//  if (!user) {
-//   res.status(401);
-//   throw new Error('User not found');
-//  }
-
-//  // Add to database
-//  const product = await Product.create({
-//   user: req.user.id,
-//   name,
-//   image,
-//   brand,
-//   price,
-//   category,
-//   description,
-//   reviews,
-//   numReviews,
-//   countInStock,
-//  });
-
-//  res.status(201).json(product);
-// });
-
 // @desc    Update a product
 // @route   PUT /api/products/
 // @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
- console.log(req.body);
- console.log(req.user);
-
  const updatedProduct = await Product.findByIdAndUpdate(
   req.params.productId,
   req.body
@@ -86,7 +42,8 @@ const updateProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
- const { name, price, brand, category, countInStock, description } = req.body;
+ res.json(req.body);
+ const { name, price, brand, image, category, countInStock, description } = req.body;
 
  const updatedProduct = {
   name,
@@ -111,4 +68,19 @@ const createProduct = asyncHandler(async (req, res) => {
  }
 });
 
-export { getAllProducts, getProduct, createProduct, updateProduct };
+// @desc    Delete a products
+// @route   DELETE /api/products/admin/products/:productId
+// @access  Private/Admin
+const deleteProduct = asyncHandler(async (req, res) => {
+ const product = Product.findById(req.params.productId);
+
+ if (product) {
+  const deletedProduct = await product.remove();
+  res.status(200).json(deletedProduct);
+ } else {
+  res.status(404);
+  throw new Error('Product not found');
+ }
+});
+
+export { getAllProducts, getProduct, createProduct, updateProduct, deleteProduct };

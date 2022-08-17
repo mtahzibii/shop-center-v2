@@ -59,10 +59,10 @@ const getOrder = asyncHandler(async (req, res) => {
  }
 });
 
-// @desc   Get logged in user  orders
+// @desc   Get logged in user orders
 // @route  GET /api/orders
 // @Access Private
-const getAllOrders = asyncHandler(async (req, res) => {
+const getAllUserOrders = asyncHandler(async (req, res) => {
  const orders = await Order.find({ user: req.user._id });
  if (orders) {
   res.status(200).json(orders);
@@ -100,4 +100,41 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
  }
 });
 
-export { createOrder, getOrder, getAllOrders, updateOrderToPaid };
+// @desc   Get All orders
+// @route  GET /api/orders/admin/orders
+// @Access Private/Admin
+const getAllOrders = asyncHandler(async (req, res) => {
+ const orders = await Order.find();
+
+ if (orders) {
+  res.status(200).json(orders);
+ } else {
+  res.status(400);
+  throw new Error('Failed to fetch orders!');
+ }
+});
+
+// @desc   Update an order
+// @route  PUT /api/orders/admin/orders/:orderId
+// @Access Private/Admin
+const updateOrder = asyncHandler(async (req, res) => {
+ const order = await Order.findByIdAndUpdate(req.params.orderId, req.body, {
+  new: true,
+ });
+
+ if (order) {
+  res.status(200).json(order);
+ } else {
+  res.status(400);
+  throw new Error('Failed to fetch orders!');
+ }
+});
+
+export {
+ createOrder,
+ getOrder,
+ getAllUserOrders,
+ updateOrderToPaid,
+ getAllOrders,
+ updateOrder,
+};

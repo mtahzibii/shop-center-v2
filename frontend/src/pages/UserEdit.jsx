@@ -1,5 +1,5 @@
 import { Form, FormControl, FormGroup, FormLabel, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -7,8 +7,10 @@ import { useParams } from 'react-router-dom';
 import { updateUserByAdmin } from '../features/users/userSlice';
 import { getUserByAdmin } from '../features/users/userSlice';
 import Spinner from '../components/Spinner';
+import { toast } from 'react-toastify';
 
 const UserEdit = () => {
+ const navigate = useNavigate();
  const dispatch = useDispatch();
  const { userId } = useParams();
 
@@ -21,9 +23,7 @@ const UserEdit = () => {
  const { userEdit, isLoading, isSuccess } = useSelector((state) => state.user);
 
  useEffect(() => {
-  if (!userEdit || userEdit._id !== userId) {
-   dispatch(getUserByAdmin(userId));
-  }
+  dispatch(getUserByAdmin(userId));
  }, [dispatch, isSuccess]);
 
  useEffect(() => {
@@ -59,7 +59,8 @@ const UserEdit = () => {
   };
 
   dispatch(updateUserByAdmin(updatedUserData));
-  window.location.reload();
+  navigate('/admin/users');
+  toast.success('User profile updated');
  };
 
  if (isLoading) {

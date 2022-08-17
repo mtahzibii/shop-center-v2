@@ -18,7 +18,6 @@ const orderSchema = mongoose.Schema(
      required: true,
      ref: 'Product',
     },
-    // productId: { type: Number, required: true },
    },
   ],
   shippingAddress: {

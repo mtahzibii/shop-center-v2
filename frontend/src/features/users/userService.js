@@ -72,14 +72,14 @@ const updateProfile = async (userProfileData, token) => {
  return data;
 };
 
-// Get all users data
+// Get all users data by admin
 const getAllUsers = async (token) => {
  const config = {
   headers: {
    Authorization: `Bearer ${token}`,
   },
  };
- const { data } = await axios.get(API_URL, config);
+ const { data } = await axios.get(`${API_URL}/admin/users`, config);
 
  return data;
 };
@@ -100,6 +100,19 @@ const updateUserProfileByAdmin = async (userProfileData, token) => {
  return data;
 };
 
+// Delete user by admin
+const deleteUserByAdmin = async (userId, token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.delete(`${API_URL}/admin/users/${userId}`, config);
+
+ console.log(data);
+ return data;
+};
+
 // Logout user
 const logout = async () => {
  localStorage.removeItem('userInfo');
@@ -114,5 +127,6 @@ const userService = {
  getAllUsers,
  getUserProfileByAdmin,
  updateUserProfileByAdmin,
+ deleteUserByAdmin,
 };
 export default userService;

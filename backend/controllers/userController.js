@@ -44,7 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
  }
 });
 
-// @desc    Get all userService
+// @desc    Get all users
 // @route   GET /api/users
 // @access  Private
 const getAllUsers = asyncHandler(async (req, res) => {
@@ -165,12 +165,6 @@ const getUserByAdmin = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/admin/users/:userId
 // @access  Private/Admin
 const updateUserProfileByAdmin = asyncHandler(async (req, res) => {
- //  const user = await User.findById(req.params.userId);
-
- //  const { name, email, isAdmin } = req.body;
-
- //  const userToBeUpdated = { ...user, name, email, isAdmin };
-
  const updatedProfile = await User.findByIdAndUpdate(
   req.params.userId,
   req.body
@@ -179,6 +173,21 @@ const updateUserProfileByAdmin = asyncHandler(async (req, res) => {
  res.status(201).json(updatedProfile);
 });
 
+// @desc    Delete user by admin priviledge
+// @route   DELETE /api/users/admin/users/:userId
+// @access  Private/Admin
+const deleteUser = asyncHandler(async (req, res) => {
+ const deletedUser = await User.findOneAndDelete({ _id: req.params.userId });
+
+ if (deletedUser) {
+  res.status(200).json(deletedUser);
+ } else {
+  res.status(400);
+  throw new Error('User not found');
+ }
+});
+
+// Generate Token
 const generateToken = (id) => {
  return jwt.sign({ id }, process.env.JWT_SECRET, {
   expiresIn: '5h',
@@ -193,4 +202,5 @@ export {
  getAllUsers,
  getUserByAdmin,
  updateUserProfileByAdmin,
+ deleteUser,
 };

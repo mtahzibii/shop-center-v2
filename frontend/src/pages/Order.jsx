@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Image, ListGroup, ListGroupItem, Row, Col } from 'react-bootstrap';
+import { Image, ListGroup, ListGroupItem, Row, Col, Button } from 'react-bootstrap';
 import Message from '../components/Message';
 import Spinner from '../components/Spinner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getOrder } from '../features/orders/orderSlice';
+import { updateOrder } from '../features/orders/orderSlice';
 
 const Order = () => {
  const dispatch = useDispatch();
@@ -13,22 +14,22 @@ const Order = () => {
 
  const { user, isLoading: userLoading } = useSelector((state) => state.user);
  const orderDetails = useSelector((state) => state.order);
+ const { order, isLoading, isError, message } = orderDetails;
+ //  const { isDelivered } = order;
 
  useEffect(() => {
   if (!user) {
    navigate('/login');
   }
 
-  if (orderId) {
+  if (!order || order._id !== orderId) {
    dispatch(getOrder(orderId));
   }
- }, [dispatch, orderId, navigate, user]);
+ }, [dispatch, orderId, navigate, user, order]);
 
- if (!orderDetails) {
+ if (isLoading) {
   return <Spinner />;
  }
-
- const { order, isLoading, isError, message } = orderDetails;
 
  //   Add decimal to prices
  const addDecimals = (num) => {
@@ -37,6 +38,12 @@ const Order = () => {
  const itemsPrice = addDecimals(
   +order?.orderItems?.reduce((acc, curr) => acc + curr.price * curr.qty, 0)
  );
+
+ //  Mark as deliver handler
+ const onDeliverHandler = () => {
+  const updatedOrder = { ...order, isDelivered: true };
+  dispatch(updateOrder(updatedOrder));
+ };
 
  if (isLoading || userLoading) {
   return <Spinner />;
@@ -137,6 +144,17 @@ const Order = () => {
         <Col>${order.totalPrice}</Col>
        </Row>
       </ListGroupItem>
+      {user.isAdmin && !order.isDelivered && (
+       <ListGroupItem>
+        <Row>
+         <Col className='d-grid'>
+          <Button type='button' className='btn btn-block' onClick={onDeliverHandler}>
+           Mark as Delivered
+          </Button>
+         </Col>
+        </Row>
+       </ListGroupItem>
+      )}
      </ListGroup>
     </Col>
    </Row>

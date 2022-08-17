@@ -80,19 +80,45 @@ export const createProduct = createAsyncThunk(
  }
 );
 
+// Delete a product by admin
+export const deleteProduct = createAsyncThunk(
+ 'products/deleteProduct',
+ async (productId, thunkAPI) => {
+  try {
+   const token = thunkAPI.getState().user.user.token;
+   return await productService.deleteSingleProduct(productId, token);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
+
 // Reset meta states (loading, error, succes and mesaage);
-const state = () => {
- initialState.isError = false;
- initialState.isSuccess = false;
- initialState.message = '';
- initialState.isLoading = false;
-};
+// const state = () => {
+//  initialState.isError = false;
+//  initialState.isSuccess = false;
+//  initialState.message = '';
+//  initialState.isLoading = false;
+// };
 
 const productSlice = createSlice({
  name: 'product',
  initialState,
  reducers: {
-  reset: (state) => initialState,
+  metaReset: (state) => {
+   state.isLoading = false;
+   state.isError = false;
+   state.isSuccess = false;
+   state.message = '';
+  },
+  reset: (state) => {
+   state.product = {};
+  },
  },
  extraReducers: (builder) =>
   builder
@@ -140,8 +166,38 @@ const productSlice = createSlice({
     state.isError = true;
     state.isSuccess = false;
     state.message = action.payload;
+   })
+   .addCase(createProduct.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(createProduct.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isError = false;
+    state.isSuccess = true;
+    state.product = action.payload;
+   })
+   .addCase(createProduct.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isError = true;
+    state.isSuccess = false;
+    state.message = action.payload;
+   })
+   .addCase(deleteProduct.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(deleteProduct.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.product = action.payload;
+   })
+   .addCase(deleteProduct.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isError = true;
+    state.isSuccess = false;
+    state.message = action.payload;
    }),
 });
 
-export const { reset } = productSlice.actions;
+export const { reset, metaReset } = productSlice.actions;
 export default productSlice.reducer;

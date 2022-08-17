@@ -3,16 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { MDBFile } from 'mdb-react-ui-kit';
 import { toast } from 'react-toastify';
 import { Button, Form, FormControl, FormGroup, FormLabel } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { fetchProduct } from '../features/products/productSlice';
 import { updateProduct } from '../features/products/productSlice';
 import Spinner from '../components/Spinner';
-import { reset } from '../features/products/productSlice';
+import { createProduct } from '../features/products/productSlice';
+const API_URL = 'http://localhost:5000/api/upload';
 
-const ProductEdit = () => {
+const NewProduct = () => {
  const navigate = useNavigate();
  const { productId } = useParams();
  const dispatch = useDispatch();
@@ -21,6 +22,18 @@ const ProductEdit = () => {
   (state) => state.product
  );
 
+ //  useEffect(() => {
+ //   if (isError) {
+ //    toast.error('Failed to create product');
+ //   }
+
+ //   if (product) {
+ //    navigate('/admin/products');
+ //   }
+ //  }, []);
+
+ const [image, setImage] = useState('');
+ const [uploading, setUploading] = useState(false);
  const [productData, setProductData] = useState({
   name: '',
   price: '0',
@@ -32,33 +45,22 @@ const ProductEdit = () => {
  });
 
  useEffect(() => {
-  dispatch(fetchProduct(productId));
- }, [dispatch, productId]);
-
- useEffect(() => {
-  if (isError) {
-   toast.error('Failed to get product');
-  }
- }, [isError]);
-
- useEffect(() => {
   if (isSuccess && product._id === productId)
    setProductData({
-    name: product?.name,
-    price: product?.price,
-    image: product?.image,
-    brand: product?.brand,
-    countInStock: product?.countInStock,
-    category: product?.category,
-    description: product?.description,
+    name: product?.name ? product.name : '',
+    price: product?.price ? product.price : '',
+    image: product?.image ? product.image : '',
+    brand: product?.brand ? product.brand : '',
+    countInStock: product?.countInStock ? product.countInStock : '',
+    category: product?.category ? product.category : '',
+    description: product?.description ? product.description : '',
    });
- }, [product, productId, isSuccess]);
+ }, [product, productId, product]);
 
- const editProductHandler = (e) => {
+ const createProductHandler = (e) => {
   e.preventDefault();
 
-  const updatedProductData = {
-   _id: productId,
+  const newProduct = {
    name: productData.name,
    price: productData.price,
    image: productData.image,
@@ -68,11 +70,35 @@ const ProductEdit = () => {
    description: productData.description,
   };
 
-  dispatch(updateProduct(updatedProductData));
-
+  dispatch(createProduct(newProduct));
   if (isSuccess) {
    navigate('/admin/products');
-   toast.success('Product info successfully updated. Reload the page');
+   toast.success('New product successfully created. Reload the page.');
+  }
+ };
+
+ const uploadFileHandler = async (e) => {
+  e.preventDefault();
+
+  const file = e.target.files[0];
+  const formData = new FormData();
+  formData.append('image', file);
+  setUploading(true);
+
+  try {
+   const config = {
+    headers: {
+     'Content-Type': 'multipart/form-data',
+    },
+   };
+
+   const { data } = await axios.post(API_URL, formData, config);
+
+   setProductData((prevState) => ({ ...prevState, image: data }));
+   setUploading(false);
+  } catch (error) {
+   console.error(error);
+   setUploading(false);
   }
  };
 
@@ -90,7 +116,7 @@ const ProductEdit = () => {
     Go Back
    </Link>
    <FormContainer>
-    <h1 className='mb-2'>Edit Product</h1>
+    <h1 className='mb-2'>New Product</h1>
     <Form>
      <FormGroup className='mt-5'>
       <FormLabel className='fw-bold'>Name</FormLabel>
@@ -114,7 +140,8 @@ const ProductEdit = () => {
 
      <FormGroup className='mt-3'>
       <FormLabel className='fw-bold'>Image</FormLabel>
-      <MDBFile id='image-file' />
+      <MDBFile id='customFile' type='file' onChange={uploadFileHandler} />
+      {uploading && <Spinner />}
      </FormGroup>
 
      <FormGroup className='mt-3'>
@@ -156,8 +183,8 @@ const ProductEdit = () => {
       ></FormControl>
      </FormGroup>
 
-     <Button className='my-5' onClick={editProductHandler}>
-      Update
+     <Button className='my-5' onClick={createProductHandler}>
+      Create Product
      </Button>
     </Form>
    </FormContainer>
@@ -165,4 +192,4 @@ const ProductEdit = () => {
  );
 };
 
-export default ProductEdit;
+export default NewProduct;

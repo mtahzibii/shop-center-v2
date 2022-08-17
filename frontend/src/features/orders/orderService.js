@@ -64,5 +64,42 @@ const orderPay = async (paymentResult, orderId, token) => {
  return data;
 };
 
-const orderService = { setOrdertoDB, getOrderFromDB, getMyOrdersFromDB, orderPay };
+// Get all users's orders
+const getAllOrdersByAdmin = async (token) => {
+ const config = {
+  headers: {
+   'Content-Type': 'application/json',
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.get(`${API_URL}/admin/orders`, config);
+
+ return data;
+};
+
+// Update order by admin
+const updateOrderByAdmin = async (updatedOrder, token) => {
+ const config = {
+  headers: {
+   'Content-Type': 'application/json',
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.put(
+  `${API_URL}/admin/orders/${updatedOrder._id}`,
+  updatedOrder,
+  config
+ );
+
+ return data;
+};
+
+const orderService = {
+ setOrdertoDB,
+ getOrderFromDB,
+ getMyOrdersFromDB,
+ orderPay,
+ getAllOrdersByAdmin,
+ updateOrderByAdmin,
+};
 export default orderService;

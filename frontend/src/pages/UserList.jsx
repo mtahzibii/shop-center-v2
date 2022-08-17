@@ -3,7 +3,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getUsers } from '../features/users/userSlice.js';
+import { getUsers, deleteUser } from '../features/users/userSlice.js';
 import Spinner from '../components/Spinner.jsx';
 import { Check } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
@@ -12,11 +12,13 @@ import Message from '../components/Message';
 const UserList = () => {
  const navigate = useNavigate();
  const dispatch = useDispatch();
- const { user, users, isLoading } = useSelector((state) => state.user);
+ const { user, users, isLoading, isError, userEdit } = useSelector(
+  (state) => state.user
+ );
 
- const onDeleteHandler = () => {
-  console.log('Delete user');
- };
+ //  useEffect(() => {
+ //   dispatch(getUsers());
+ //  }, [user, isError]);
 
  useEffect(() => {
   if (user && user.isAdmin) {
@@ -24,9 +26,9 @@ const UserList = () => {
   } else if (!user) {
    navigate('/login');
   }
- }, [dispatch, navigate]);
+ }, [dispatch, navigate, userEdit, isError]);
 
- if (!user.isAdmin) {
+ if (user && !user.isAdmin) {
   return (
    <Message variant='danger'>
     <p className='fw-bold fs-4'>Access Denied.</p>
@@ -34,6 +36,12 @@ const UserList = () => {
    </Message>
   );
  }
+
+ const onDeleteHandler = (userId) => {
+  if (window.confirm('Are you sure you want to delete this user?')) {
+   dispatch(deleteUser(userId));
+  }
+ };
 
  if (isLoading) {
   return <Spinner />;
@@ -83,7 +91,7 @@ const UserList = () => {
           borderRadius: '5px',
           background: 'none',
          }}
-         onClick={onDeleteHandler}
+         onClick={() => onDeleteHandler(user._id)}
         >
          <TrashIcon style={{ color: 'red' }} />
         </Button>

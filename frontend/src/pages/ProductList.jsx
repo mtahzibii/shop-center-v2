@@ -3,19 +3,52 @@ import { Row, Col, Table, Button } from 'react-bootstrap';
 import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts } from '../features/products/productSlice';
+import { fetchProducts, deleteProduct } from '../features/products/productSlice';
 import { useNavigate } from 'react-router-dom';
+import { reset, metaReset } from '../features/products/productSlice';
+import Spinner from '../components/Spinner';
+import { toast } from 'react-toastify';
+import Message from '../components/Message';
 
 const ProductList = () => {
  const navigate = useNavigate();
  const dispatch = useDispatch();
- const { products, isLoading } = useSelector((state) => state.product);
+ const { products, isLoading, isSuccess, isError, product } = useSelector(
+  (state) => state.product
+ );
+ const { user } = useSelector((state) => state.user);
 
  useEffect(() => {
-  dispatch(fetchProducts());
- }, []);
+  if (isError) {
+   toast.error('Unable to fetch products');
+  }
 
- const onDeleteHandler = () => {};
+  if (user && user.isAdmin) {
+   dispatch(fetchProducts());
+  } else if (!user) {
+   navigate('/login');
+  }
+ }, [dispatch, navigate, user, isError]);
+
+ //  Prevent access for non-admin users
+ if (user && !user.isAdmin) {
+  return (
+   <Message variant='danger'>
+    <p className='fw-bold fs-4'>Access Denied.</p>
+    Administrative Privileges required.
+   </Message>
+  );
+ }
+
+ const onDeleteHandler = (productId) => {
+  if (window.confirm(`Are you sure you want to delete this product?`)) {
+   dispatch(deleteProduct(productId));
+  }
+ };
+
+ if (isLoading) {
+  return <Spinner />;
+ }
 
  return (
   <div>
@@ -26,7 +59,10 @@ const ProductList = () => {
     <Col lg={2} style={{ margin: '10px 0', padding: '5px 0' }}>
      <Button
       style={{ background: '#449056', borderRadius: '5px' }}
-      onClick={() => navigate('/admin/products/new-product')}
+      onClick={() => {
+       navigate('/admin/products/new-product');
+       dispatch(reset());
+      }}
      >
       <i className='fas fa-plus '></i> Create Product
      </Button>
@@ -72,7 +108,7 @@ const ProductList = () => {
             background: 'none',
             width: '40px',
            }}
-           onClick={onDeleteHandler}
+           onClick={() => onDeleteHandler(product._id)}
           >
            <TrashIcon style={{ color: 'red' }} />
           </Button>
