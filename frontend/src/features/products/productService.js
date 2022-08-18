@@ -62,8 +62,6 @@ const deleteSingleProduct = async (productId, token) => {
 const searchProductsByUsers = async (keyword) => {
  const { data } = await axios.get(`${API_URL}/search/${keyword}`);
 
- console.log(data);
-
  return data;
 };
 
