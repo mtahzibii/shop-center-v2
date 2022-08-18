@@ -83,4 +83,34 @@ const deleteProduct = asyncHandler(async (req, res) => {
  }
 });
 
-export { getAllProducts, getProduct, createProduct, updateProduct, deleteProduct };
+// @desc    Search products
+// @route   GET /api/products
+// @access  Public
+const searchProdcuts = asyncHandler(async (req, res) => {
+ const keyword = req.params.keyword
+  ? {
+     name: {
+      $regex: req.params.keyword,
+      $options: 'i',
+     },
+    }
+  : {};
+
+ const products = await Product.find({ ...keyword });
+
+ if (products) {
+  res.status(200).json(products);
+ } else {
+  res.status(404);
+  throw new Error('Product not found');
+ }
+});
+
+export {
+ getAllProducts,
+ getProduct,
+ createProduct,
+ updateProduct,
+ deleteProduct,
+ searchProdcuts,
+};

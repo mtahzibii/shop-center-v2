@@ -58,11 +58,21 @@ const deleteSingleProduct = async (productId, token) => {
  return data;
 };
 
+// Search product(s) service
+const searchProductsByUsers = async (keyword) => {
+ const { data } = await axios.get(`${API_URL}/search/${keyword}`);
+
+ console.log(data);
+
+ return data;
+};
+
 const productService = {
  getProducts,
  getProduct,
  updateProductSpec,
  createNewProduct,
  deleteSingleProduct,
+ searchProductsByUsers,
 };
 export default productService;

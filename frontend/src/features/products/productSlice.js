@@ -98,13 +98,22 @@ export const deleteProduct = createAsyncThunk(
  }
 );
 
-// Reset meta states (loading, error, succes and mesaage);
-// const state = () => {
-//  initialState.isError = false;
-//  initialState.isSuccess = false;
-//  initialState.message = '';
-//  initialState.isLoading = false;
-// };
+// Search product(s)
+export const searchProducts = createAsyncThunk(
+ 'products/searchProducts',
+ async (keyword, thunkAPI) => {
+  try {
+   return await productService.searchProductsByUsers(keyword);
+  } catch (error) {
+   const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+   return thunkAPI.rejectWithValue(message);
+  }
+ }
+);
 
 const productSlice = createSlice({
  name: 'product',
@@ -192,6 +201,21 @@ const productSlice = createSlice({
     state.product = action.payload;
    })
    .addCase(deleteProduct.rejected, (state, action) => {
+    state.isLoading = false;
+    state.isError = true;
+    state.isSuccess = false;
+    state.message = action.payload;
+   })
+   .addCase(searchProducts.pending, (state) => {
+    state.isLoading = true;
+   })
+   .addCase(searchProducts.fulfilled, (state, action) => {
+    state.isLoading = false;
+    state.isSuccess = true;
+    state.isError = false;
+    state.products = action.payload;
+   })
+   .addCase(searchProducts.rejected, (state, action) => {
     state.isLoading = false;
     state.isError = true;
     state.isSuccess = false;

@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser, reset } from '../features/users/userSlice';
 import { useNavigate } from 'react-router-dom';
 import Spinner from './Spinner';
+import { MDBInputGroup, MDBAutocomplete, MDBIcon, MDBBtn } from 'mdb-react-ui-kit';
+import SearchBox from './SearchBox';
 
 const Header = () => {
  const navigate = useNavigate();
@@ -26,9 +28,13 @@ const Header = () => {
   <header>
    <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
     <Container>
-     <LinkContainer to='/'>
-      <Navbar.Brand>Shop-Center</Navbar.Brand>
-     </LinkContainer>
+     <div className='d-flex justify-content-start'>
+      <LinkContainer to='/' style={{ marginRight: '0' }}>
+       <Navbar.Brand>Shop-Center</Navbar.Brand>
+      </LinkContainer>
+
+      <SearchBox />
+     </div>
      <Nav className='ml-auto'>
       <LinkContainer to='/cart'>
        <Nav.Link>
