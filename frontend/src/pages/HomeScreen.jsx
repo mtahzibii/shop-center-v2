@@ -6,6 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
 import { reset } from '../features/products/productSlice';
+import CarouselComponent from '../components/Carousel';
 
 const HomeScreen = () => {
  const dispatch = useDispatch();
@@ -35,6 +36,8 @@ const HomeScreen = () => {
 
  return (
   <>
+   <CarouselComponent />
+
    <h1 className='my-5'>Latest Products</h1>
    <Row>
     {products.map((product) => (
