@@ -28,7 +28,7 @@ const SearchBox = () => {
      type='search'
      placeholder='Search'
      className='me-2'
-     style={{ height: '45px', width: '300px' }}
+     style={{ height: '45px', width: '250px' }}
      //  onChange={searchHandler}
     />
     <Button variant='outline-success' style={{ height: '45px' }} type='submit'>

@@ -16,10 +16,6 @@ const UserList = () => {
   (state) => state.user
  );
 
- //  useEffect(() => {
- //   dispatch(getUsers());
- //  }, [user, isError]);
-
  useEffect(() => {
   if (user && user.isAdmin) {
    dispatch(getUsers());

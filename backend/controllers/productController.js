@@ -106,6 +106,50 @@ const searchProdcuts = asyncHandler(async (req, res) => {
  }
 });
 
+// @desc    Set a new review
+// @route   POST /api/products/:productId/reviews
+// @access  Private
+const createProductReview = asyncHandler(async (req, res) => {
+ const { rating, comment } = req.body;
+
+ const product = await Product.findById(req.params.productId);
+
+ if (product) {
+  //  Check if product already reviewed by specific user
+  const alreadyExist = product.reviews.find(
+   (review) => review.user.toString() === req.user._id.toString()
+  );
+
+  if (alreadyExist) {
+   res.status(400);
+   throw new Error('Product already reviewed');
+  }
+
+  const review = {
+   comment,
+   rating: Number(rating),
+   user: req.user._id,
+   name: req.user.name,
+  };
+
+  product.reviews.push(review);
+
+  product.numReviews = product.reviews.length;
+
+  //  Calculate rating average
+  product.rating =
+   product.reviews.reduce((acc, curr) => acc + curr.rating, 0) /
+   product.reviews.length;
+
+  await product.save();
+
+  res.status(200).json(product);
+ } else {
+  res.status(404);
+  throw new Error('Product not found');
+ }
+});
+
 export {
  getAllProducts,
  getProduct,
@@ -113,4 +157,5 @@ export {
  updateProduct,
  deleteProduct,
  searchProdcuts,
+ createProductReview,
 };

@@ -8,6 +8,7 @@ import {
  updateProduct,
  deleteProduct,
  searchProdcuts,
+ createProductReview,
 } from '../controllers/productController.js';
 
 // Product routes
@@ -17,5 +18,6 @@ router.get('/search/:keyword', searchProdcuts);
 router.post('/admin/products', protect, isAdmin, createProduct);
 router.put('/admin/products/:productId', protect, isAdmin, updateProduct);
 router.delete('/admin/products/:productId', protect, isAdmin, deleteProduct);
+router.post('/:productId/reviews', protect, createProductReview);
 
 export default router;

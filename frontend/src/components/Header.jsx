@@ -35,7 +35,7 @@ const Header = () => {
 
       <SearchBox />
      </div>
-     <Nav className='ml-auto'>
+     <Nav className='ml-auto d-flex justify-content-end' style={{ width: '350px' }}>
       <LinkContainer to='/cart'>
        <Nav.Link>
         <i className='fas fa-shopping-cart'></i> Cart
@@ -59,8 +59,8 @@ const Header = () => {
       )}
 
       {user && user.isAdmin === false && (
-       <NavDropdown title={user.name} id='username'>
-        <NavDropdown.Item href='/profile'>Prfile</NavDropdown.Item>
+       <NavDropdown title={user.name} id='username' style={{ marginRight: '0px' }}>
+        <NavDropdown.Item href='/profile'>Profile</NavDropdown.Item>
         <NavDropdown.Item href='/login' onClick={onLogout}>
          Sign out
         </NavDropdown.Item>

@@ -65,6 +65,24 @@ const searchProductsByUsers = async (keyword) => {
  return data;
 };
 
+// Create product review
+const createProductReview = async (review, token) => {
+ const config = {
+  headers: {
+   Authorization: `Bearer ${token}`,
+  },
+ };
+ const { data } = await axios.post(
+  `${API_URL}/${review.productId}/reviews`,
+  review,
+  config
+ );
+
+ console.log(data);
+
+ return data;
+};
+
 const productService = {
  getProducts,
  getProduct,
@@ -72,5 +90,6 @@ const productService = {
  createNewProduct,
  deleteSingleProduct,
  searchProductsByUsers,
+ createProductReview,
 };
 export default productService;
