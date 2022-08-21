@@ -38,7 +38,7 @@ const HomeScreen = () => {
   <>
    <CarouselComponent />
 
-   <h1 className='my-5'>Latest Products</h1>
+   <h2 className='my-5'>Latest Products</h2>
    <Row>
     {products.map((product) => (
      <Col sm={12} md={6} lg={3} xl={3} key={product._id}>

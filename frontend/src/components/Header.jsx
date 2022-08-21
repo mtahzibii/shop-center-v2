@@ -35,7 +35,7 @@ const Header = () => {
 
       <SearchBox />
      </div>
-     <Nav className='ml-auto d-flex justify-content-end' style={{ width: '350px' }}>
+     <Nav className='ml-auto d-flex justify-content-end' style={{ width: '400px' }}>
       <LinkContainer to='/cart'>
        <Nav.Link>
         <i className='fas fa-shopping-cart'></i> Cart
