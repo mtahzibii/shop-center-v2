@@ -45,17 +45,10 @@ const UserList = () => {
 
  return (
   <div>
-   <h2 className='my-4'>Users</h2>
-   <Table
-    striped
-    bordered
-    hover
-    size='sm'
-    className='mt-4'
-    style={{ fontSize: '14px' }}
-   >
-    <thead className='fw-bold text-center ' style={{ color: 'blue' }}>
-     <tr>
+   <h1 className='my-4'>Users</h1>
+   <Table striped bordered hover size='sm'>
+    <thead>
+     <tr className='text-center' style={{ fontWeight: '700', color: 'blue' }}>
       <th style={{ width: '200px' }}>id</th>
       <th style={{ width: '230px' }}>Name</th>
       <th style={{ width: '230px' }}>Email</th>
@@ -64,44 +57,43 @@ const UserList = () => {
      </tr>
     </thead>
     <tbody>
-     {users &&
-      users.map((user) => (
-       <tr key={user._id}>
-        <td>{user._id}</td>
-        <td>{user.name}</td>
-        <td>{user.email}</td>
-        <td className='text-center'>
-         {user.isAdmin ? (
-          <Check size={30} style={{ color: 'green' }} />
-         ) : (
-          <i className='fas fa-times' style={{ color: 'red' }}></i>
-         )}
-        </td>
-        <td className='d-flex justify-content-center' style={{ padding: '3px' }}>
-         <LinkContainer
-          to={`/admin/users/${user._id}`}
-          style={{ background: 'none', borderRadius: '5px', color: 'black' }}
-         >
-          <Button>
-           <i className='fas fa-edit '></i>
-          </Button>
-         </LinkContainer>
-         <Button
-          variant='light'
-          className='ml-5'
-          style={{
-           height: '40px',
-           marginLeft: '20px',
-           borderRadius: '5px',
-           background: 'none',
-          }}
-          onClick={() => onDeleteHandler(user._id)}
-         >
-          <TrashIcon style={{ color: 'red' }} />
+     {users.map((user) => (
+      <tr key={user._id}>
+       <td>{user._id}</td>
+       <td>{user.name}</td>
+       <td>{user.email}</td>
+       <td className='text-center'>
+        {user.isAdmin ? (
+         <Check size={30} style={{ color: 'green' }} />
+        ) : (
+         <i className='fas fa-times' style={{ color: 'red' }}></i>
+        )}
+       </td>
+       <td className='d-flex justify-content-center' style={{ padding: '5px' }}>
+        <LinkContainer
+         to={`/admin/users/${user._id}`}
+         style={{ background: 'none', borderRadius: '5px', color: 'black' }}
+        >
+         <Button>
+          <i className='fas fa-edit '></i>
          </Button>
-        </td>
-       </tr>
-      ))}
+        </LinkContainer>
+        <Button
+         variant='light'
+         className='ml-5'
+         style={{
+          height: '40px',
+          marginLeft: '20px',
+          borderRadius: '5px',
+          background: 'none',
+         }}
+         onClick={() => onDeleteHandler(user._id)}
+        >
+         <TrashIcon style={{ color: 'red' }} />
+        </Button>
+       </td>
+      </tr>
+     ))}
     </tbody>
    </Table>
   </div>

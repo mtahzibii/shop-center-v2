@@ -1,9 +1,6 @@
 main {
  min-height: 85vh;
 }
-body {
- font-size: 80%;
-}
 
 .rating span {
  margin-right: 0.2rem;
@@ -11,10 +8,6 @@ body {
 
 h3 {
  padding: 0.5rem 0;
-}
-
-.table-admin {
- padding: '5px';
 }
 
 .card-body-link a:hover {
