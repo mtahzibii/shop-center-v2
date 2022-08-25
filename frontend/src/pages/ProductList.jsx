@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts, deleteProduct } from '../features/products/productSlice';
 import { useNavigate } from 'react-router-dom';
-import { reset, metaReset } from '../features/products/productSlice';
+import { reset } from '../features/products/productSlice';
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
 import Message from '../components/Message';
@@ -54,7 +54,7 @@ const ProductList = () => {
   <div>
    <Row className='d-flex justify-content-between mt-4'>
     <Col lg={2} style={{ margin: '10px 0', padding: '5px 0' }}>
-     <h1>Products</h1>
+     <h2>Products</h2>
     </Col>
     <Col lg={2} style={{ margin: '10px 0', padding: '5px 0' }}>
      <Button
@@ -69,7 +69,14 @@ const ProductList = () => {
     </Col>
    </Row>
    <Row>
-    <Table striped bordered hover size='sm' className='mt-4'>
+    <Table
+     striped
+     bordered
+     hover
+     size='sm'
+     className='mt-4'
+     style={{ fontSize: '14px' }}
+    >
      <thead className='fw-bold text-center ' style={{ color: 'blue' }}>
       <tr>
        <td style={{ width: '200px' }}>ID</td>
@@ -89,7 +96,7 @@ const ProductList = () => {
          <td>{product.price}</td>
          <td>{product.category}</td>
          <td>{product.brand}</td>
-         <td className='d-flex justify-content-center'>
+         <td className='d-flex justify-content-center' style={{ padding: '3px' }}>
           <LinkContainer
            to={`/admin/products/${product._id}`}
            style={{ background: 'none', borderRadius: '5px', color: 'black' }}
