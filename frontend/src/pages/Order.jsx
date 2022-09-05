@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { PayPalButtons } from '@paypal/react-paypal-js';
 import { useSelector, useDispatch } from 'react-redux';
 import { Image, ListGroup, ListGroupItem, Row, Col, Button } from 'react-bootstrap';
 import Message from '../components/Message';
@@ -15,7 +16,6 @@ const Order = () => {
  const { user, isLoading: userLoading } = useSelector((state) => state.user);
  const orderDetails = useSelector((state) => state.order);
  const { order, isLoading, isError, message } = orderDetails;
- //  const { isDelivered } = order;
 
  useEffect(() => {
   if (!user) {
@@ -43,6 +43,14 @@ const Order = () => {
  const onDeliverHandler = () => {
   const updatedOrder = { ...order, isDelivered: true };
   dispatch(updateOrder(updatedOrder));
+ };
+
+ const onApprove = () => {
+  console.log('onApprove');
+ };
+
+ const createOrder = (data, actions) => {
+  console.log('createOrder');
  };
 
  if (isLoading || userLoading) {
@@ -144,6 +152,13 @@ const Order = () => {
         <Col>${order.totalPrice}</Col>
        </Row>
       </ListGroupItem>
+      {!user.isAdmin && (
+       <ListGroupItem>
+        <Row>
+         <PayPalButtons style={{ layout: 'horizontal' }} />
+        </Row>
+       </ListGroupItem>
+      )}
       {user.isAdmin && !order.isDelivered && (
        <ListGroupItem>
         <Row>

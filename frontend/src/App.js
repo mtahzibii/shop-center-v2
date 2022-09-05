@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import React from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -29,32 +30,34 @@ const App = () => {
    <Router>
     <Header />
     <main>
-     <Container>
-      <Routes>
-       <Route path='/' element={<HomeScreen />} />
-       <Route path='/product/:productId' element={<ProductPage />} />
-       <Route path='/cart/:productId' element={<CartPage />} />
-       <Route path='/cart' element={<CartPage />} />
-       <Route path='/login' element={<Login />} />
-       <Route path='/register' element={<Register />} />
-       <Route path='/shipping' element={<Shipping />} />
-       <Route path='/payment' element={<Payment />} />
-       <Route path='/placeOrder' element={<PlaceOrder />} />
-       <Route path='/order/:orderId' element={<Order />} />
-       <Route path='/profile' element={<PrivateRoute />}>
-        <Route path='/profile' element={<ProfilePage />} />
-       </Route>
-       <Route path='/shipping' element={<PrivateRoute />}>
+     <PayPalScriptProvider options={{ 'client-id': 'test' }}>
+      <Container>
+       <Routes>
+        <Route path='/' element={<HomeScreen />} />
+        <Route path='/product/:productId' element={<ProductPage />} />
+        <Route path='/cart/:productId' element={<CartPage />} />
+        <Route path='/cart' element={<CartPage />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
         <Route path='/shipping' element={<Shipping />} />
-       </Route>
-       <Route path='/admin/users' element={<UserList />} />
-       <Route path='/admin/users/:userId' element={<UserEdit />} />
-       <Route path='/admin/products' element={<ProductList />} />
-       <Route path='/admin/products/:productId' element={<ProductEdit />} />
-       <Route path='/admin/products/new-product' element={<NewProduct />} />
-       <Route path='/admin/orders' element={<OrderList />} />
-      </Routes>
-     </Container>
+        <Route path='/payment' element={<Payment />} />
+        <Route path='/placeOrder' element={<PlaceOrder />} />
+        <Route path='/order/:orderId' element={<Order />} />
+        <Route path='/profile' element={<PrivateRoute />}>
+         <Route path='/profile' element={<ProfilePage />} />
+        </Route>
+        <Route path='/shipping' element={<PrivateRoute />}>
+         <Route path='/shipping' element={<Shipping />} />
+        </Route>
+        <Route path='/admin/users' element={<UserList />} />
+        <Route path='/admin/users/:userId' element={<UserEdit />} />
+        <Route path='/admin/products' element={<ProductList />} />
+        <Route path='/admin/products/:productId' element={<ProductEdit />} />
+        <Route path='/admin/products/new-product' element={<NewProduct />} />
+        <Route path='/admin/orders' element={<OrderList />} />
+       </Routes>
+      </Container>
+     </PayPalScriptProvider>
     </main>
     <Footer />
    </Router>
