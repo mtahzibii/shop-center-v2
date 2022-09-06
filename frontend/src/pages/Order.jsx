@@ -152,13 +152,6 @@ const Order = () => {
         <Col>${order.totalPrice}</Col>
        </Row>
       </ListGroupItem>
-      {!user.isAdmin && (
-       <ListGroupItem>
-        <Row>
-         <PayPalButtons style={{ layout: 'horizontal' }} />
-        </Row>
-       </ListGroupItem>
-      )}
       {user.isAdmin && !order.isDelivered && (
        <ListGroupItem>
         <Row>
