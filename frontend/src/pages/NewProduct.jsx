@@ -11,7 +11,7 @@ import { fetchProduct } from '../features/products/productSlice';
 import { updateProduct } from '../features/products/productSlice';
 import Spinner from '../components/Spinner';
 import { createProduct } from '../features/products/productSlice';
-const API_URL = 'http://localhost:5000/api/upload';
+const API_URL = '/api/upload';
 
 const NewProduct = () => {
  const navigate = useNavigate();
