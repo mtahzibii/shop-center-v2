@@ -1,10 +1,9 @@
 import path from 'path';
 import express from 'express';
-import colors from 'colors';
 import dotenv from 'dotenv';
+import colors from 'colors';
 import cors from 'cors';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
-
 import connectDB from './config/db.js';
 
 import productRoutes from './routes/productRoutes.js';
@@ -47,12 +46,12 @@ app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 if (process.env.NODE_ENV === 'production') {
  app.use(express.static(path.join(__dirname, '/frontend/build')));
 
- app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
- });
+ app.get('*', (req, res) =>
+  res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+ );
 } else {
  app.get('/', (req, res) => {
-  res.send('API is running ...');
+  res.send('API is running....');
  });
 }
 
